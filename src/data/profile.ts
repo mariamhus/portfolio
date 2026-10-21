@@ -45,7 +45,7 @@ export const profile = {
     role: "Front-End Developer at Nexey",
     detail: "Building the Workforce Management (WFM) module of a real-time workforce monitoring and IT operations platform.",
   },
-  email: "mariamhus2000@gmail.com",
+  email: "mariamhussein.dev@gmail.com",
   cv: "/Mariam_Hussein_CV.pdf",
   links: [
     { label: "GitHub", href: "https://github.com/mariamhus" },
