@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projects | Mariam Hussein</title>
+    <meta name="description" content="Personal projects by Mariam Hussein, a front-end engineer building with React, Next.js, Angular, and TypeScript." />
+    <meta name="author" content="Mariam Hussein" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Projects | Mariam Hussein" />
+    <meta property="og:description" content="Personal projects built with React, Next.js, Angular, and TypeScript." />
+    <meta property="og:url" content="%SITE_URL%/projects/" />
+    <meta property="og:image" content="%SITE_URL%/og.png" />
+    <link rel="canonical" href="%SITE_URL%/projects/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#f2f3f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      try {
+        var theme = localStorage.getItem("portfolio:theme");
+        if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
+      } catch (error) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/projects.tsx"></script>
+  </body>
+</html>

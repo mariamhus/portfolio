@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mariam Hussein | Front-End Engineer</title>
+    <meta name="description" content="Mariam Hussein is a front-end engineer in Cairo building dashboards and SaaS interfaces with React, TypeScript, and Next.js." />
+    <meta name="author" content="Mariam Hussein" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Mariam Hussein | Front-End Engineer" />
+    <meta property="og:description" content="Dashboards and SaaS interfaces built with React, TypeScript, and Next.js." />
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:image" content="%SITE_URL%/og.png" />
+    <link rel="canonical" href="%SITE_URL%/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#f2f3f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      try {
+        var theme = localStorage.getItem("portfolio:theme");
+        if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
+      } catch (error) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
