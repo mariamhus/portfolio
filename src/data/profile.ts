@@ -55,6 +55,21 @@ export const profile = {
 
 export const projects: Project[] = [
   {
+    name: "Raff Store",
+    summary:
+      "A bilingual English and Arabic online store on the DummyJSON API, with a catalog, cart, validated checkout, accounts, a wishlist, reviews, and an admin dashboard. The whole interface flips to right-to-left in Arabic.",
+    highlights: [
+      "Full Arabic translation with RTL layout, Arabic plural rules, and localized prices and dates",
+      "Search, filters, sorting, and pagination kept in the URL, with TanStack Query and Zustand",
+      "Lazy-loaded admin dashboard with KPI cards, charts, and product management",
+    ],
+    tech: ["React", "TypeScript", "TanStack Query", "Zustand", "React Hook Form", "Zod", "i18next", "Recharts", "Vitest"],
+    image: "/projects/raff.webp",
+    imageAlt: "Raff store home page with a dark hero banner and a row of shopping categories",
+    demo: "https://raffstore-ochre.vercel.app",
+    code: "https://github.com/mariamhus/Raff-Store",
+  },
+  {
     name: "Art Print Store",
     summary:
       "A storefront for abstract art prints built on the Next.js App Router, with shop filters, a framed-print configurator, a cart that syncs across tabs, and a validated checkout.",
