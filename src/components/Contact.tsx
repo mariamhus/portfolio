@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Check, Copy, Download } from "lucide-react";
+import { Check, Copy, Download, Send } from "lucide-react";
 import { ExternalLink } from "./ExternalLink";
 import { FallingWords } from "./FallingWords";
 import { profile } from "../data/profile";
@@ -29,7 +29,7 @@ export function Contact() {
       </h2>
       <FallingWords text="Email is the quickest way to reach me. I'm also on LinkedIn and GitHub." className="mt-5 max-w-xl text-lg text-muted" />
       <div className="mt-8 flex flex-wrap items-center gap-3">
-        <a href={`mailto:${profile.email}`} className="email-link font-display font-bold">
+        <a href="/contact/" className="email-link font-display font-bold">
           {profile.email}
         </a>
         <button
@@ -42,6 +42,10 @@ export function Contact() {
           {copied ? "Copied" : "Copy email"}
         </button>
       </div>
+      <a href="/contact/" className="button-primary mt-8">
+        <Send aria-hidden="true" className="size-4" />
+        Send me a message
+      </a>
       <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
         {profile.links.map((link) => (
           <li key={link.href}>

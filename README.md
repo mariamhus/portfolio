@@ -8,15 +8,21 @@ My personal portfolio site: who I am, the projects I've built, my experience, an
 
 ## Features
 
-- Home page with Experience, Professional work, featured Projects, Skills, and Contact sections
-- A separate Projects page at `/projects/` with every project in a three-column grid
-- Project cards with screenshots, highlights, tech stack, and links to the live demo and source code
+- Animated loading screen, shown once per visit
+- Home page with a hero card that flips on its own between what I'm working on and the "A little more about me" facts (click to flip, hover or the pause button to stop), a featured projects showcase, Skills, and Contact sections
+- An About page at `/about/` that builds in as you scroll: "Hello, I'm Mariam." letter by letter, the intro, three cards (Architecture, Performance, User Experience) that open on hover, focus, or tap with a small animated visual, a deck of facts, and a line that leads into Professional work below it
+- Professional work as a timeline: the line fills as you scroll, and each project lights up when the fill reaches it
+- Skills as two rows of technology logos that scroll in opposite directions
+- Projects showcase: stacked, tilted browser windows with tabs for each project, which advance on their own until you pick one
+- A separate Projects page at `/projects/` with every project as a short card (three columns, four on large monitors)
+- A Contact page at `/contact/` with an animated illustrated Mariam: she follows the pointer, watches the field you type in, greets you by name, looks worried at a mistyped email, gets excited over the Send button, and throws a paper plane when you send. The message opens in your email app, already addressed and filled in
+- A full-screen project view for each project: the details on the left, and real desktop and phone screenshots of the live site gliding up and down on their own inside a dark device frame on the right (hover to pause, or scroll the frame yourself)
 - Navigation that highlights the section you're reading
 - Seasonal themes: spring petals, summer fireflies, autumn leaves, or winter snow with an aurora, chosen from today's date or picked in the header
 - Day and night skies with a toggle that plays a sunrise or sunset: a starfield with parallax and shooting stars at night. Without a saved choice, spring and summer open in day mode and autumn and winter at night
 - Text that settles into place word by word as you scroll, and a letter-by-letter animation on the name
 - Downloadable CV and a one-click "Copy email" button
-- Responsive from small phones to large screens, with the headline sized to fit any width
+- Responsive from small phones to 2K and 4K monitors: on large screens the whole layout scales up and widens, so it keeps its proportions
 - Accessible: skip link, semantic landmarks, labelled links, visible focus, and reduced-motion support that stops every animation
 - Social preview image and meta tags for sharing on LinkedIn and other sites
 - Fonts bundled with the site and screenshots in WebP, so pages load fast
@@ -25,11 +31,12 @@ See [CHANGELOG.md](./CHANGELOG.md) for what has changed and when.
 
 ## Updating the content
 
-All the text lives in one file, `src/data/profile.ts`: intro, about, projects, work, experience, skills, education, and links. Edit it and the page updates; no component changes are needed.
+All the text lives in one file, `src/data/profile.ts`: intro, about, projects, professional work, and links. Edit it and the page updates; no component changes are needed. The full work history, skills, education, and certifications live in the CV.
 
-- **Projects:** the first three in the `projects` list are featured on the home page; the Projects page shows all of them.
+- **Projects:** the first five in the `projects` list are featured in the home page showcase; the Projects page shows all of them. Each project has a short `tagline` for cards and a longer `summary` and `highlights` for the details panel.
 - **Project links:** each project has a `demo` field. Leave it empty to hide the "Live demo" link, or paste the deployed URL to show it.
-- **Screenshots:** replace the images in `public/projects/` with the same file names. 1600×1000 WebP or PNG works best.
+- **Screenshots:** replace the images in `public/projects/` with the same file names. 1600×1000 WebP or PNG works best. The project view's gallery lives in `public/projects/gallery/` (`<name>-desktop-1.webp`, `<name>-mobile-1.webp`, and so on) and is listed in `src/data/gallery.ts`.
+- **About:** the cards and facts are `aboutCards` and `aboutFacts` in `profile.ts`.
 - **CV:** replace `public/Mariam_Hussein_CV.pdf` with a newer version using the same file name.
 
 ## Getting started
@@ -63,7 +70,9 @@ Add `?season=` and `?theme=` to the address to see any combination without chang
 
 ```
 index.html                 Home page
+about/index.html           About page
 projects/index.html        Projects page
+contact/index.html         Contact page
 public/
 ├── projects/              Project screenshots
 ├── Mariam_Hussein_CV.pdf
@@ -73,27 +82,39 @@ src/
 ├── components/            One component per section, plus:
 │   ├── Header.tsx           Navigation, season picker, and theme toggle
 │   ├── Layout.tsx           Shared header, background, and footer for both pages
-│   ├── ProjectCard.tsx      Card used on both pages
+│   ├── ProjectCard.tsx      Short card on the Projects page
+│   ├── ProjectShowcase.tsx  Stacked project showcase on the home page
+│   ├── ProjectDetails.tsx   "View details" dialog
+│   ├── TechMarquee.tsx      Skills: scrolling strip of technology logos
+│   ├── FlipCard.tsx         Hero card that flips between the current role and facts
+│   ├── Character.tsx        Animated character on the Contact page
+│   ├── WorkProjects.tsx     Professional work timeline
 │   ├── Starfield.tsx        Animated background (stars, seasonal particles, aurora, fireflies)
 │   ├── FallingWords.tsx     Scroll-driven word animation
 │   └── ThemeToggle.tsx      Season menu and day/night button
 ├── data/profile.ts        All site content
+├── data/gallery.ts        Screenshots for each project's gallery
 ├── hooks/
 │   ├── useActiveSection.ts
 │   ├── useSeason.ts
 │   └── useTheme.ts
 ├── lib/
+│   ├── loader.ts            Hides the loading screen once the page is ready
 │   ├── seasonParticles.ts   Petals, leaves, and snow
 │   └── nightEffects.ts      Fireflies and aurora
 ├── App.tsx                Home page
+├── AboutPage.tsx          About page
+├── about.tsx              Entry point for the About page
 ├── ProjectsPage.tsx       Projects page
 ├── projects.tsx           Entry point for the Projects page
+├── ContactPage.tsx        Contact page with the message form
+├── contact.tsx            Entry point for the Contact page
 ├── index.css              Theme and season colors, fonts, and shared styles
 └── main.tsx               Entry point for the home page
 ```
 
 ## Deploying
 
-Import the repository at [vercel.com/new](https://vercel.com/new) and click **Deploy**. Vite is detected automatically, and both pages are built.
+Import the repository at [vercel.com/new](https://vercel.com/new) and click **Deploy**. Vite is detected automatically, and all four pages are built.
 
 The social preview tags (`og:image`, `og:url`, and the canonical link) need absolute URLs. On Vercel they're filled in automatically from the production domain, including a custom domain like `www.mariam-hussein.website`. On another host, set the `SITE_URL` environment variable to the full address, for example `SITE_URL=https://www.mariam-hussein.website`.

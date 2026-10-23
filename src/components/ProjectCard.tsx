@@ -1,22 +1,25 @@
-import { Code2 } from "lucide-react";
-import { ExternalLink } from "./ExternalLink";
+import { ArrowUpRight, Code2 } from "lucide-react";
 import type { Project } from "../data/profile";
 
 interface ProjectCardProps {
   project: Project;
+  onOpen: (project: Project) => void;
   headingLevel?: "h2" | "h3";
 }
 
-export function ProjectCard({ project, headingLevel: Heading = "h3" }: ProjectCardProps) {
+const VISIBLE_TAGS = 3;
+
+export function ProjectCard({ project, onOpen, headingLevel: Heading = "h3" }: ProjectCardProps) {
+  const hidden = project.tech.length - VISIBLE_TAGS;
+
   return (
     <article aria-labelledby={`project-${project.name}`} className="group flex h-full flex-col">
-      <a
-        href={project.demo || project.code}
-        target="_blank"
-        rel="noreferrer"
+      <button
+        type="button"
+        onClick={() => onOpen(project)}
         tabIndex={-1}
         aria-hidden="true"
-        className="block overflow-hidden rounded-xl border border-line bg-surface"
+        className="block cursor-pointer overflow-hidden rounded-xl border border-line bg-surface"
       >
         <img
           src={project.image}
@@ -25,38 +28,40 @@ export function ProjectCard({ project, headingLevel: Heading = "h3" }: ProjectCa
           height={1000}
           loading="lazy"
           decoding="async"
-          className="aspect-[16/10] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.025]"
+          className="aspect-[16/10] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
         />
-      </a>
+      </button>
       <Heading id={`project-${project.name}`} className="mt-5 font-display text-2xl font-bold tracking-tight">
         {project.name}
       </Heading>
-      <p className="sr-only">{project.imageAlt}</p>
-      <p className="mt-2 text-muted">{project.summary}</p>
-      <ul className="mt-4 space-y-1.5 text-[15px]">
-        {project.highlights.map((point) => (
-          <li key={point} className="flex gap-2.5">
-            <span aria-hidden="true" className="mt-2.5 h-px w-3 shrink-0 bg-accent" />
-            {point}
-          </li>
-        ))}
-      </ul>
-      <ul aria-label="Built with" className="mt-5 flex flex-wrap gap-1.5">
-        {project.tech.map((item) => (
+      <p className="mt-1.5 text-muted">{project.tagline}</p>
+      <ul aria-label="Built with" className="mt-4 flex flex-wrap gap-1.5">
+        {project.tech.slice(0, VISIBLE_TAGS).map((item) => (
           <li key={item} className="tag">
             {item}
           </li>
         ))}
-      </ul>
-      <div className="mt-auto flex flex-wrap gap-x-6 gap-y-2 pt-6">
-        {project.demo && (
-          <ExternalLink href={project.demo}>
-            Live demo<span className="sr-only"> of {project.name}</span>
-          </ExternalLink>
+        {hidden > 0 && (
+          <li className="tag">
+            +{hidden}
+            <span className="sr-only"> more</span>
+          </li>
         )}
-        <a href={project.code} target="_blank" rel="noreferrer" className="text-link">
+      </ul>
+      <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 pt-6">
+        <button type="button" onClick={() => onOpen(project)} className="button-secondary h-10 px-4 text-sm">
+          View details<span className="sr-only"> about {project.name}</span>
+        </button>
+        {project.demo && (
+          <a href={project.demo} target="_blank" rel="noreferrer" className="text-link text-sm">
+            Live demo
+            <ArrowUpRight aria-hidden="true" className="size-4" />
+            <span className="sr-only"> of {project.name} (opens in a new tab)</span>
+          </a>
+        )}
+        <a href={project.code} target="_blank" rel="noreferrer" className="text-link text-sm">
           <Code2 aria-hidden="true" className="size-4" />
-          Source code<span className="sr-only"> for {project.name} (opens in a new tab)</span>
+          Code<span className="sr-only"> for {project.name} (opens in a new tab)</span>
         </a>
       </div>
     </article>

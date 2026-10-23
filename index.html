@@ -37,10 +37,24 @@
           document.documentElement.dataset.theme = "light";
           document.querySelector('meta[name="theme-color"]').setAttribute("content", "#eef6ff");
         }
+        // Loading screen: once per visit, and never for visitors who ask for reduced motion.
+        var seen = false;
+        try {
+          seen = sessionStorage.getItem("portfolio:loaded") === "1";
+        } catch (error) {}
+        if (!seen && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.dataset.loading = "";
       })();
     </script>
   </head>
   <body>
+    <div id="loader" aria-hidden="true">
+      <div class="loader-sky"></div>
+      <div class="loader-inner">
+        <p class="loader-name"><span style="--i: 0">M</span><span style="--i: 1">a</span><span style="--i: 2">r</span><span style="--i: 3">i</span><span style="--i: 4">a</span><span style="--i: 5">m</span><br /><span class="loader-accent"><span style="--i: 7">H</span><span style="--i: 8">u</span><span style="--i: 9">s</span><span style="--i: 10">s</span><span style="--i: 11">e</span><span style="--i: 12">i</span><span style="--i: 13">n</span></span></p>
+        <div class="loader-bar"><span></span></div>
+        <p class="loader-role">Front-End Engineer</p>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

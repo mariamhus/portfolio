@@ -434,10 +434,6 @@ body {
     @apply rounded-md bg-surface px-2 py-1 text-xs font-medium text-muted shadow-[inset_0_0_0_1px_var(--color-line)];
   }
 
-  .chip {
-    @apply rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-medium;
-  }
-
   .skip-link {
     @apply sr-only rounded-full bg-accent px-4 py-2 font-semibold text-accent-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50;
   }
@@ -580,4 +576,1399 @@ body {
   opacity: var(--t, 1);
   transform: translateY(calc((1 - var(--e, 1)) * -1.4em)) rotate(calc((1 - var(--e, 1)) * var(--r, 0deg)));
   transform-origin: 50% 100%;
+}
+
+/* ---------- Page width and large screens ---------- */
+
+.page-container {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 640px) {
+  .page-container {
+    padding-inline: 2rem;
+  }
+}
+
+/* Large monitors (27" and up, 2K and 4K): scale everything up and widen the page,
+   so the layout keeps its laptop proportions instead of floating in empty space. */
+@media (min-width: 1800px) {
+  html {
+    font-size: 112.5%;
+  }
+
+  .page-container {
+    max-width: 84rem;
+  }
+}
+
+@media (min-width: 2300px) {
+  html {
+    font-size: 125%;
+  }
+}
+
+@media (min-width: 3200px) {
+  html {
+    font-size: 150%;
+  }
+}
+
+/* ---------- Loading screen ---------- */
+
+#loader {
+  display: none;
+}
+
+:root[data-loading] #loader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  /* Same night sky as the page background. */
+  background:
+    radial-gradient(60rem 40rem at 85% -10%, rgb(124 108 255 / 0.14), transparent 70%),
+    radial-gradient(50rem 36rem at -10% 60%, rgb(56 189 248 / 0.07), transparent 70%),
+    radial-gradient(50rem 30rem at 50% 45%, var(--aura-a), transparent 70%),
+    var(--bg);
+  /* If the script never runs, the loader still gets out of the way. */
+  animation: loader-failsafe 0s 6s forwards;
+}
+
+:root[data-loading="done"] #loader {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 600ms ease,
+    visibility 0s 600ms;
+}
+
+/* Daytime: the page's sky gradient. Night: a field of twinkling stars. */
+:root[data-theme="light"] #loader {
+  background:
+    radial-gradient(70rem 40rem at 50% -10%, rgb(255 255 255 / 0.5), transparent 70%),
+    var(--sky);
+}
+
+.loader-sky {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 8% 18%, #fff, transparent),
+    radial-gradient(1px 1px at 22% 72%, #fff, transparent),
+    radial-gradient(2px 2px at 31% 34%, rgb(200 210 255), transparent),
+    radial-gradient(1px 1px at 44% 86%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 57% 12%, #fff, transparent),
+    radial-gradient(1px 1px at 63% 64%, rgb(255 230 210), transparent),
+    radial-gradient(2px 2px at 76% 28%, #fff, transparent),
+    radial-gradient(1px 1px at 84% 78%, rgb(190 180 255), transparent),
+    radial-gradient(1.5px 1.5px at 93% 44%, #fff, transparent),
+    radial-gradient(1px 1px at 14% 52%, #fff, transparent),
+    radial-gradient(1px 1px at 51% 48%, rgb(200 210 255), transparent),
+    radial-gradient(1.5px 1.5px at 70% 92%, #fff, transparent);
+  animation: loader-twinkle 2.4s ease-in-out infinite alternate;
+}
+
+:root[data-theme="light"] .loader-sky {
+  display: none;
+}
+
+.loader-inner {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+/* Matches the hero name: same font, two lines, the surname in the season's accent color. */
+.loader-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 13vw, 9rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.86;
+  color: var(--ink);
+}
+
+.loader-name span[style] {
+  display: inline-block;
+  animation: loader-letter 700ms var(--ease-out) both;
+  animation-delay: calc(var(--i) * 45ms);
+}
+
+.loader-accent {
+  color: var(--accent);
+}
+
+.loader-bar {
+  position: relative;
+  width: min(16rem, 60vw);
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--line);
+}
+
+.loader-bar > span {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: left;
+  animation: loader-fill 1300ms var(--ease-out) 150ms both;
+}
+
+.loader-role {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  animation: loader-fade 600ms ease 500ms both;
+}
+
+/* Hold the hero name animation until the loader has gone. */
+:root[data-loading=""] .hero-letter > span {
+  animation-play-state: paused;
+}
+
+@keyframes loader-letter {
+  from {
+    opacity: 0;
+    transform: translateY(0.6em) rotate(6deg);
+  }
+}
+
+@keyframes loader-twinkle {
+  from {
+    opacity: 0.35;
+  }
+}
+
+@keyframes loader-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes loader-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes loader-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* ---------- Project spotlight (home page) ---------- */
+
+.spot-pin {
+  position: relative;
+}
+
+/* Pinned (large screens): one screen, plus a short run of scrolling for each project after the first. */
+.spot-pin[data-pinned] {
+  height: calc(100vh + var(--steps) * var(--step) * 100vh);
+}
+
+.spot-sticky {
+  /* The browser window is sized from the available height, so it never changes size between projects. */
+  --stage-h: calc((100vw - 2rem) * 0.625 + 3.75rem);
+  --slide-w: calc((var(--stage-h) - 3.75rem) * 1.6);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .spot-sticky {
+    --stage-h: min(48vw, 34rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .spot-sticky {
+    --stage-h: min(40vw, 34rem);
+  }
+}
+
+.spot-pin[data-pinned] .spot-sticky {
+  /* Pinned, everything has to fit on one screen, so the window takes whatever height is left. */
+  --stage-h: min(60vh, 44vw, calc(100vh - 26.5rem));
+  position: sticky;
+  top: 4rem;
+  height: calc(100vh - 4rem);
+  justify-content: flex-start;
+  padding-top: clamp(1rem, 3.5vh, 2.5rem);
+  gap: clamp(1rem, 2.4vh, 1.75rem);
+}
+
+.spot-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+
+.spot-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.spot-nav > span {
+  margin-right: 0.5rem;
+}
+
+.spot-arrow {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  transition:
+    border-color 200ms ease,
+    transform 200ms var(--ease-out);
+}
+
+.spot-arrow:hover {
+  border-color: var(--muted);
+}
+
+.spot-arrow:active {
+  transform: scale(0.95);
+}
+
+/* The stage holds every slide; only the spotlight and its faded neighbours are visible. */
+.spot-stage {
+  position: relative;
+  height: var(--stage-h);
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.spot-slide {
+  --scale: 0.84;
+  --fade: 0;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(var(--slide-w), 100%);
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  pointer-events: none;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--bg);
+  box-shadow:
+    0 30px 60px -32px rgb(70 40 20 / 0.45),
+    0 10px 24px -16px rgb(70 40 20 / 0.25);
+  opacity: var(--fade);
+  transform: translateX(calc(-50% + var(--offset) * 104%)) scale(var(--scale));
+  transition:
+    transform 900ms cubic-bezier(0.65, 0, 0.35, 1),
+    opacity 700ms ease,
+    border-color 300ms ease;
+}
+
+:root:not([data-theme="light"]) .spot-slide {
+  box-shadow:
+    0 30px 60px -30px rgb(0 0 0 / 0.7),
+    0 10px 24px -16px rgb(0 0 0 / 0.5);
+}
+
+.spot-slide[data-offset="0"] {
+  --scale: 1;
+  --fade: 1;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.spot-slide[data-offset="0"]:hover {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+}
+
+.spot-slide:is([data-offset="1"], [data-offset="-1"]) {
+  --scale: 0.86;
+  --fade: 0.35;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+.spot-slide img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top;
+}
+
+.spot-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 2.25rem;
+  padding-inline: 0.85rem;
+  border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(var(--surface), var(--surface)),
+    var(--bg);
+}
+
+.spot-dots {
+  width: 2.25rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  background:
+    radial-gradient(circle, #ff5f57 0.22rem, transparent 0.24rem) 0 50% / 0.75rem 100% no-repeat,
+    radial-gradient(circle, #febc2e 0.22rem, transparent 0.24rem) 0.75rem 50% / 0.75rem 100% no-repeat,
+    radial-gradient(circle, #28c840 0.22rem, transparent 0.24rem) 1.5rem 50% / 0.75rem 100% no-repeat;
+}
+
+.spot-url {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  max-width: 20rem;
+  margin-inline: auto;
+  overflow: hidden;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: var(--line);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.72rem;
+  white-space: nowrap;
+  color: var(--muted);
+  transform: translateX(-1.1rem);
+}
+
+/* Project details, lined up with the browser window above. */
+.spot-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  width: min(var(--slide-w), 100%);
+  min-height: 7rem;
+  margin-inline: auto;
+}
+
+/* Project selector: a dark pill slides to the active project. */
+.spot-tabs {
+  position: relative;
+  display: flex;
+  gap: 0.25rem;
+  max-width: 100%;
+  margin-inline: auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0.25rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.spot-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.spot-indicator {
+  position: absolute;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  left: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  transition:
+    transform 500ms var(--ease-out),
+    width 500ms var(--ease-out);
+}
+
+.spot-tab {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--muted);
+  transition: color 300ms ease;
+}
+
+.spot-tab:hover {
+  color: var(--ink);
+}
+
+.spot-tab[aria-selected="true"] {
+  color: var(--bg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .spot-reveal {
+    animation: spot-reveal 600ms var(--ease-out) both;
+    animation-delay: calc(150ms + var(--d, 0) * 70ms);
+  }
+}
+
+/* Without motion, projects swap with a quick fade instead of sliding. */
+@media (prefers-reduced-motion: reduce) {
+  .spot-slide {
+    transition: opacity 250ms ease;
+  }
+
+  .spot-indicator {
+    transition: none;
+  }
+}
+
+@keyframes spot-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Hero flip card ---------- */
+
+.flip-card {
+  perspective: 1400px;
+}
+
+.flip-inner {
+  display: grid;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 1rem;
+  transform-style: preserve-3d;
+  transform: rotateY(calc(var(--turn, 0) * 180deg));
+  transition: transform 850ms var(--ease-out);
+}
+
+/* Both faces share one grid cell, so the card keeps the height of the longer one. */
+.flip-face {
+  grid-area: 1 / 1;
+  display: block;
+  min-height: 8.75rem;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background:
+    linear-gradient(var(--surface), var(--surface)),
+    var(--bg);
+  backface-visibility: hidden;
+  transition:
+    border-color 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.flip-face + .flip-face {
+  transform: rotateY(180deg);
+}
+
+.flip-card:hover .flip-face,
+.flip-inner:focus-visible .flip-face {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow: 0 24px 50px -30px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.flip-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+  padding-inline: 0.25rem;
+}
+
+.flip-progress {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--line);
+}
+
+.flip-progress > span {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: left;
+  animation: flip-timer var(--interval) linear both;
+}
+
+.flip-progress > span[data-paused] {
+  animation-play-state: paused;
+}
+
+.flip-control {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  color: var(--muted);
+  transition:
+    color 200ms ease,
+    background-color 200ms ease;
+}
+
+.flip-control:hover {
+  background: var(--line);
+  color: var(--ink);
+}
+
+@keyframes flip-timer {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Without motion the faces swap without turning. */
+@media (prefers-reduced-motion: reduce) {
+  .flip-inner {
+    transition: none;
+  }
+}
+
+/* ---------- About ---------- */
+
+.about-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.about-letter {
+  display: inline-block;
+}
+
+.about-card-slot {
+  list-style: none;
+}
+
+.about-card {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  padding: 1.25rem 1.25rem 1.5rem;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--surface);
+  backdrop-filter: blur(8px);
+  transition:
+    border-color 300ms ease,
+    transform 400ms var(--ease-out),
+    box-shadow 400ms ease;
+}
+
+/* A soft glow in the season's color that follows the card open. */
+.about-card::before {
+  content: "";
+  position: absolute;
+  inset: -40% -20% auto;
+  height: 80%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 22%, transparent), transparent);
+  opacity: 0;
+  transition: opacity 400ms ease;
+  pointer-events: none;
+}
+
+.about-card:is(:hover, :focus-visible, [data-open]) {
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  transform: translateY(-4px);
+  box-shadow: 0 30px 60px -36px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.about-card:is(:hover, :focus-visible, [data-open])::before {
+  opacity: 1;
+}
+
+/* The description opens smoothly from zero height. */
+.about-card-more {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 450ms var(--ease-out),
+    opacity 350ms ease;
+}
+
+.about-card-more > * {
+  overflow: hidden;
+}
+
+.about-card:is(:hover, :focus-visible, [data-open]) .about-card-more {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+/* Visuals: drawn in the accent color, animated while the card is open. */
+.about-visual {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+
+.viz-lines path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  opacity: 0.4;
+  transition:
+    stroke-dashoffset 900ms var(--ease-out),
+    opacity 300ms ease;
+}
+
+.viz-node {
+  fill: color-mix(in srgb, var(--accent) 18%, transparent);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  transition: fill 300ms ease;
+}
+
+.viz-node-root {
+  fill: var(--accent);
+}
+
+.about-card:is(:hover, :focus-visible, [data-open]) .viz-lines path {
+  stroke-dashoffset: 0;
+  opacity: 1;
+}
+
+.about-card:is(:hover, :focus-visible, [data-open]) .viz-leaf {
+  fill: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.viz-bar {
+  fill: color-mix(in srgb, var(--accent) 55%, transparent);
+  transform-box: fill-box;
+  transform-origin: bottom;
+  transform: scaleY(calc(1 - var(--i) * 0.13));
+  transition: transform 700ms var(--ease-out);
+  transition-delay: calc(var(--i) * 60ms);
+}
+
+.about-card:is(:hover, :focus-visible, [data-open]) .viz-bar {
+  transform: scaleY(calc(0.2 + var(--i) * 0.16));
+  fill: var(--accent);
+}
+
+.viz-speed {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 3 6;
+  opacity: 0.5;
+}
+
+.viz-field {
+  fill: color-mix(in srgb, var(--ink) 6%, transparent);
+  stroke: var(--line);
+}
+
+.viz-button {
+  fill: var(--accent);
+}
+
+.viz-focus {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  opacity: 0;
+  transform-box: view-box;
+  transform-origin: 12px 8px;
+}
+
+.viz-rtl {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--muted);
+}
+
+.about-card:is(:hover, :focus-visible, [data-open]) .viz-focus {
+  opacity: 1;
+}
+
+/* "A little more about me": a small stacked deck with one fact on top. */
+.about-facts {
+  display: grid;
+  gap: 1.5rem;
+  align-items: center;
+  margin-top: 3rem;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--surface);
+}
+
+@media (min-width: 900px) {
+  .about-facts {
+    grid-template-columns: 15rem minmax(0, 1fr) auto;
+    gap: 2.5rem;
+    padding: 1.75rem 2rem;
+  }
+}
+
+.about-deck {
+  position: relative;
+  min-height: 5.5rem;
+  display: grid;
+  align-items: center;
+}
+
+.about-deck::before,
+.about-deck::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--bg);
+}
+
+.about-deck::before {
+  transform: rotate(-2.5deg) translateY(6px);
+  opacity: 0.5;
+}
+
+.about-deck::after {
+  transform: rotate(1.5deg) translateY(3px);
+  opacity: 0.8;
+}
+
+.about-fact {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+  border-radius: 1rem;
+  background:
+    linear-gradient(color-mix(in srgb, var(--accent) 8%, transparent), color-mix(in srgb, var(--accent) 8%, transparent)),
+    var(--bg);
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+/* The line that leads down into Professional work, drawn in the timeline's accent color. */
+.about-bridge {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  padding: 3.5rem 0 2.5rem;
+  color: var(--muted);
+  transition: color 200ms ease;
+}
+
+.about-bridge:hover {
+  color: var(--ink);
+}
+
+.about-bridge-line {
+  width: 2px;
+  height: 7rem;
+  border-radius: 2px;
+  background: linear-gradient(var(--line), var(--line));
+  position: relative;
+  overflow: hidden;
+}
+
+.about-bridge-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--twinkle-glow);
+  transform-origin: top;
+  transform: scaleY(var(--grow, 0));
+}
+
+/* Entrance: the greeting rises letter by letter, then the intro, cards, and facts follow. */
+@media (prefers-reduced-motion: no-preference) {
+  .about .about-letter,
+  .about .about-intro,
+  .about .about-card-slot,
+  .about .about-facts {
+    opacity: 0;
+  }
+
+  .about[data-inview] .about-letter {
+    animation: letter-in 900ms var(--ease-out) both;
+    animation-delay: calc(var(--l) * 35ms);
+  }
+
+  .about[data-inview] .about-intro {
+    animation: about-in 800ms var(--ease-out) 500ms both;
+  }
+
+  .about[data-inview] .about-card-slot {
+    animation: about-in 750ms var(--ease-out) both;
+    animation-delay: calc(750ms + var(--i) * 140ms);
+  }
+
+  .about[data-inview] .about-facts {
+    animation: about-in 750ms var(--ease-out) 1250ms both;
+  }
+
+  .about-fact {
+    animation: fact-in 500ms var(--ease-out);
+  }
+
+  .about-card:is(:hover, :focus-visible, [data-open]) .viz-focus {
+    animation: focus-walk 2.4s ease-in-out infinite;
+  }
+
+  .about-card:is(:hover, :focus-visible, [data-open]) .viz-speed {
+    animation: speed-dash 1s linear infinite;
+  }
+}
+
+/* Explicit end state: these elements start at opacity 0, so the animation has to bring them to 1. */
+@keyframes about-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fact-in {
+  from {
+    opacity: 0;
+    transform: translateY(-14px) rotate(-3deg);
+  }
+}
+
+@keyframes focus-walk {
+  0%,
+  28% {
+    transform: translateY(0);
+  }
+  36%,
+  62% {
+    transform: translateY(32px);
+  }
+  70%,
+  100% {
+    transform: translate(0, 66px) scaleX(0.43);
+  }
+}
+
+@keyframes speed-dash {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+
+/* ---------- Professional work timeline ---------- */
+
+.timeline {
+  --dot: 1.375rem;
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 calc(var(--dot) + 1.5rem);
+  list-style: none;
+}
+
+/* Track and fill run from the first dot's center to the last; the script sets the lengths. */
+.timeline::before,
+.timeline::after {
+  content: "";
+  position: absolute;
+  top: var(--track-start, 0);
+  left: calc(var(--dot) / 2 - 1px);
+  width: 2px;
+  border-radius: 2px;
+}
+
+.timeline::before {
+  height: var(--track-length, 0);
+  background: var(--line);
+}
+
+.timeline::after {
+  height: var(--fill, 0);
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--twinkle-glow);
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 3.5rem;
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  top: 0;
+  left: calc(-1 * (var(--dot) + 1.5rem));
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--dot);
+  height: var(--dot);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  transition:
+    border-color 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.timeline-dot::after {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--muted);
+  transition:
+    background-color 300ms ease,
+    transform 300ms var(--ease-out);
+}
+
+.timeline-item[data-active] .timeline-dot {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.timeline-item[data-active] .timeline-dot::after {
+  background: var(--ink);
+  transform: scale(1.15);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .timeline-item > :not(.timeline-dot) {
+    transition:
+      opacity 500ms ease,
+      transform 500ms var(--ease-out);
+  }
+
+  .timeline-item:not([data-active]) > :not(.timeline-dot) {
+    opacity: 0.4;
+    transform: translateY(0.5rem);
+  }
+}
+
+/* ---------- Contact page form ---------- */
+
+:root {
+  --danger: #f87171;
+}
+
+:root[data-theme="light"] {
+  --danger: #c62828;
+}
+
+.contact-card {
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--surface);
+  backdrop-filter: blur(8px);
+}
+
+@media (min-width: 640px) {
+  .contact-card {
+    padding: 2rem;
+  }
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+textarea.field {
+  min-height: 9rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.field[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.field-error {
+  margin-top: 0.4rem;
+  font-size: 0.875rem;
+  color: var(--danger);
+}
+
+/* ---------- Technology strip ---------- */
+
+.marquee {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.marquee-track {
+  display: flex;
+}
+
+.marquee-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Without motion the rows simply wrap, and the duplicate copies are not needed. */
+.marquee-list[aria-hidden="true"] {
+  display: none;
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--muted);
+  transition: color 200ms ease;
+}
+
+.marquee-item:hover {
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+
+  .marquee-track {
+    width: max-content;
+    animation: marquee 55s linear infinite;
+  }
+
+  .marquee-row[data-direction="right"] .marquee-track {
+    animation-direction: reverse;
+  }
+
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  .marquee-list {
+    flex-wrap: nowrap;
+    padding-right: 2.5rem;
+  }
+
+  .marquee-list[aria-hidden="true"] {
+    display: flex;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------- Project view (full screen, opened from "View details") ---------- */
+
+.project-view {
+  position: fixed;
+  inset: 0.75rem;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1.5rem;
+  color: var(--ink);
+  background:
+    radial-gradient(60rem 40rem at 100% 0%, var(--aura-a), transparent 70%),
+    var(--bg);
+  box-shadow: 0 50px 120px -30px rgb(0 0 0 / 0.75);
+}
+
+.project-view::backdrop {
+  background: rgb(2 3 10 / 0.7);
+  backdrop-filter: blur(6px);
+}
+
+html:has(.project-view[open]) {
+  overflow: hidden;
+}
+
+.pv-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.pv-bar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 4rem;
+  padding-inline: 1.25rem;
+  background: linear-gradient(var(--bg) 60%, transparent);
+}
+
+.pv-close,
+.pv-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.pv-close {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.pv-pill:hover {
+  border-color: var(--muted);
+}
+
+.pv-pill-accent {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.pv-pill-accent:hover {
+  border-color: var(--accent);
+  opacity: 0.9;
+}
+
+.pv-grid {
+  display: grid;
+  gap: 2rem;
+  padding: 0 1.25rem 2rem;
+}
+
+/* Dark device frame that holds the site's screens. It scrolls on its own, and by hand. */
+.pv-frame {
+  height: 65dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  padding: 0.75rem;
+  border-radius: 1.5rem;
+  background: #0a0b12;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    0 40px 80px -40px rgb(0 0 0 / 0.8);
+}
+
+.pv-frame::-webkit-scrollbar {
+  display: none;
+}
+
+.pv-frame:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.pv-gallery {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.pv-row {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.pv-row[data-kind="mobile"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+
+.pv-row img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  background: #15161f;
+}
+
+/* Side by side, one screen tall: the details on the left (scrolling if they're long) and the frame on the right. */
+@media (min-width: 900px) {
+  .pv-scroll {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .pv-content {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .pv-grid {
+    height: 100%;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 3rem;
+    padding: 0 2rem 2rem;
+  }
+
+  .pv-info {
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .pv-frame {
+    height: 100%;
+  }
+
+  .pv-row[data-kind="mobile"] {
+    padding-inline: 8%;
+    gap: 6%;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .project-view[open] {
+    animation: dialog-in 650ms var(--ease-out);
+  }
+
+  .project-view[open]::backdrop {
+    animation: loader-fade 300ms ease;
+  }
+
+  .pv-content {
+    animation: pv-enter 750ms var(--ease-out) both;
+  }
+
+  .pv-info > * {
+    animation: reveal-up 650ms var(--ease-out) both;
+  }
+
+  .pv-info > :nth-child(2) {
+    animation-delay: 80ms;
+  }
+
+  .pv-info > :nth-child(3) {
+    animation-delay: 140ms;
+  }
+
+  .pv-info > :nth-child(n + 4) {
+    animation-delay: 200ms;
+  }
+
+  .pv-frame {
+    animation: pv-frame-in 900ms var(--ease-out) 120ms both;
+  }
+}
+
+@keyframes pv-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14vh);
+  }
+}
+
+@keyframes pv-frame-in {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.97);
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8vh) scale(0.96);
+  }
+}
+
+@layer components {
+  .icon-button {
+    @apply grid size-10 place-items-center rounded-full border border-line text-muted transition-colors hover:border-muted hover:text-ink;
+  }
 }

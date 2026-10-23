@@ -20,11 +20,13 @@ function siteUrlPlugin(): Plugin {
 export default defineConfig({
   plugins: [react(), tailwindcss(), siteUrlPlugin()],
   build: {
-    // Two pages: the home page and /projects/.
+    // Four pages: the home page, /about/, /projects/, and /contact/.
     rollupOptions: {
       input: {
         main: resolve(import.meta.dirname, "index.html"),
         projects: resolve(import.meta.dirname, "projects/index.html"),
+        contact: resolve(import.meta.dirname, "contact/index.html"),
+        about: resolve(import.meta.dirname, "about/index.html"),
       },
     },
   },

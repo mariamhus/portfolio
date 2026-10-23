@@ -5,6 +5,8 @@ export interface Link {
 
 export interface Project {
   name: string;
+  /** One short line for cards and the home page showcase. */
+  tagline: string;
   summary: string;
   highlights: string[];
   tech: string[];
@@ -19,15 +21,6 @@ export interface WorkProject {
   context: string;
   summary: string;
   tech: string[];
-}
-
-export interface Role {
-  title: string;
-  company: string;
-  location: string;
-  start: string;
-  end: string;
-  points: string[];
 }
 
 export const profile = {
@@ -53,9 +46,49 @@ export const profile = {
   ] satisfies Link[],
 };
 
+export interface AboutCard {
+  title: string;
+  subtitle: string;
+  description: string;
+  visual: "architecture" | "performance" | "experience";
+}
+
+export const aboutCards: AboutCard[] = [
+  {
+    title: "Architecture",
+    subtitle: "Designing scalable systems",
+    description:
+      "Component architecture, shared patterns, and state management that keep large dashboards consistent as they grow, like the WFM module I'm building at Nexey.",
+    visual: "architecture",
+  },
+  {
+    title: "Performance",
+    subtitle: "Optimizing React applications",
+    description: "Memoization, lazy loading, and code splitting, so data-heavy dashboards stay fast while real-time data keeps arriving.",
+    visual: "performance",
+  },
+  {
+    title: "User Experience",
+    subtitle: "Building accessible interfaces",
+    description: "Semantic HTML, keyboard navigation, and English and Arabic (right-to-left) layouts, so every screen works for everyone.",
+    visual: "experience",
+  },
+];
+
+/** Short facts for the "a little more about me" deck in the About section. */
+export const aboutFacts: string[] = [
+  "Before frontend, I automated KPI reporting with Python and Power BI, and cut a 4-hour report down to under 10 minutes.",
+  "I've mentored a team of eight frontend interns through code reviews and day-to-day problems.",
+  "I build in English and Arabic, including full right-to-left layouts.",
+  "I studied Computer Science, then trained as a full-stack developer at ITI.",
+  "I'm deepening my Next.js skills alongside my work at Nexey.",
+  "I'm based in Cairo, Egypt.",
+];
+
 export const projects: Project[] = [
   {
     name: "Raff Store",
+    tagline: "A bilingual English and Arabic store with an admin dashboard.",
     summary:
       "A bilingual English and Arabic online store on the DummyJSON API, with a catalog, cart, validated checkout, accounts, a wishlist, reviews, and an admin dashboard. The whole interface flips to right-to-left in Arabic.",
     highlights: [
@@ -71,6 +104,7 @@ export const projects: Project[] = [
   },
   {
     name: "Art Print Store",
+    tagline: "A Next.js storefront for abstract art prints.",
     summary:
       "A storefront for abstract art prints built on the Next.js App Router, with shop filters, a framed-print configurator, a cart that syncs across tabs, and a validated checkout.",
     highlights: [
@@ -86,6 +120,7 @@ export const projects: Project[] = [
   },
   {
     name: "Kanban Board",
+    tagline: "A drag-and-drop task board built with Angular.",
     summary:
       "A drag-and-drop board with work-in-progress limits, due date badges, label and priority filters, and undo. The board is saved in the browser.",
     highlights: [
@@ -101,6 +136,7 @@ export const projects: Project[] = [
   },
   {
     name: "Markdown Notes",
+    tagline: "A notes app with a live Markdown preview.",
     summary:
       "A notes app with a live Markdown preview, hashtag tags, search, pinning, and checklists you can tick right in the preview. Notes are saved in the browser and export as .md files.",
     highlights: [
@@ -116,6 +152,7 @@ export const projects: Project[] = [
   },
   {
     name: "Movie Search",
+    tagline: "Search and browse movies from TMDB.",
     summary:
       "Search and browse movies from TMDB with infinite scroll, a details page for every film, trailers, and a watchlist that stays in sync across tabs.",
     highlights: [
@@ -131,6 +168,7 @@ export const projects: Project[] = [
   },
   {
     name: "Expense Tracker",
+    tagline: "Track spending against a monthly budget.",
     summary:
       "Track spending by category against a monthly budget, with a breakdown that doubles as a filter, a day-by-day chart, month history, and CSV export.",
     highlights: [
@@ -146,6 +184,7 @@ export const projects: Project[] = [
   },
   {
     name: "Weather Dashboard",
+    tagline: "Forecasts for any city, in the colors of the sky.",
     summary:
       "Search any city for current conditions, the next 24 hours, and a 7-day outlook. The main panel takes on the color of the actual sky.",
     highlights: [
@@ -161,6 +200,7 @@ export const projects: Project[] = [
   },
   {
     name: "Pomodoro Timer",
+    tagline: "A focus timer with break cycles and weekly stats.",
     summary:
       "A focus timer with automatic break cycles, sound alerts, desktop notifications, keyboard shortcuts, and stats for today and the past week.",
     highlights: [
@@ -204,89 +244,4 @@ export const workProjects: WorkProject[] = [
     summary: "A learning platform where instructors upload and manage video lectures, tests, and course materials.",
     tech: ["React", "JavaScript", "Material UI", "Node.js", "Express", "MongoDB"],
   },
-  {
-    name: "Palynation landing page",
-    context: "Freelance",
-    summary: "A single-page marketing site for a gaming tool.",
-    tech: ["React", "TypeScript", "Tailwind CSS", "Redux Toolkit"],
-  },
-];
-
-export const experience: Role[] = [
-  {
-    title: "Front-End Developer",
-    company: "Nexey",
-    location: "Maadi, Cairo",
-    start: "Aug 2025",
-    end: "Present",
-    points: [
-      "Own frontend architecture for a real-time workforce monitoring platform, including state management, API integration, and reusable UI patterns.",
-      "Building the Workforce Management (WFM) module, a standalone sub-application inside the dashboard with its own layout, navigation, permission-based routing, and full English and Arabic (RTL) support.",
-      "Build shared components such as data tables with inline filters and pagination, dialogs, and summary cards, plus data-visualization modules, to keep modules consistent and speed up delivery.",
-      "Tune rendering performance on data-heavy dashboards with memoization, lazy loading, and code splitting.",
-      "Apply accessibility best practices, including semantic HTML and keyboard navigation, and test across browsers and devices.",
-    ],
-  },
-  {
-    title: "IT Service Desk",
-    company: "VOIS",
-    location: "Smart Village, Cairo",
-    start: "Dec 2023",
-    end: "Aug 2025",
-    points: [
-      "Designed an automated KPI reporting pipeline with Power Automate, Python, and Power BI that cut report generation from over 4 hours to under 10 minutes.",
-      "Standardized KPIs across teams and automated report delivery to every stakeholder.",
-      "Supported internal users and acted as the link between them and backend technical teams.",
-    ],
-  },
-  {
-    title: "React.js Developer",
-    company: "TEQNEIA",
-    location: "Sheikh Zayed, Giza",
-    start: "Mar 2023",
-    end: "Dec 2023",
-    points: [
-      "Led and mentored 8 frontend interns through code reviews and day-to-day technical problems.",
-      "Defined the project structure and coding standards the team worked to.",
-      "Took part in sprint planning and estimation, and turned business requirements into frontend solutions with product owners.",
-    ],
-  },
-  {
-    title: "MEARN Track Trainee",
-    company: "Information Technology Institute (ITI)",
-    location: "Cairo",
-    start: "Dec 2022",
-    end: "May 2023",
-    points: ["Intensive full-stack program covering Angular and React on the front end, and Node.js, Express, and MongoDB on the back end."],
-  },
-];
-
-export const skills: { group: string; items: string[] }[] = [
-  {
-    group: "Frontend",
-    items: ["React", "Next.js", "Angular", "TypeScript", "JavaScript (ES6+)", "Redux Toolkit", "RTK Query", "TanStack Query", "Zustand", "React Router", "React Hook Form", "HTML5", "CSS3", "Sass", "Tailwind CSS", "Material UI", "Ant Design"],
-  },
-  {
-    group: "Architecture and quality",
-    items: ["Component architecture", "Design systems", "Performance optimization", "Lazy loading", "Accessibility", "Internationalization (i18next, RTL)", "Unit testing (Vitest, React Testing Library)", "Cross-browser testing"],
-  },
-  {
-    group: "Data visualization",
-    items: ["Chart.js", "Recharts", "Power BI", "Tableau"],
-  },
-  {
-    group: "Backend and tooling",
-    items: ["Node.js", "Express", "MongoDB", "MySQL", "Python", "Spring MVC", "Zod", "Vite", "ESLint", "Git and GitHub", "Postman", "Vercel"],
-  },
-];
-
-export const education = [
-  { title: "BA in Computer Science", place: "October 6 University", period: "2019 – 2022" },
-  { title: "Full-Stack Web Development, MEARN track", place: "Information Technology Institute (ITI)", period: "2022 – 2023" },
-];
-
-export const certifications = [
-  { title: "Next.js", place: "Udemy", period: "In progress" },
-  { title: "Data Analyst Professional", place: "Epsilon AI Institute", period: "2023 – 2024" },
-  { title: "Data Scientist Professional", place: "Epsilon AI Institute", period: "2022 – 2023" },
 ];

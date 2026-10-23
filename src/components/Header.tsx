@@ -3,15 +3,15 @@ import { ThemeToggle } from "./ThemeToggle";
 import { useActiveSection } from "../hooks/useActiveSection";
 import { profile } from "../data/profile";
 
-export type Page = "home" | "projects";
+export type Page = "home" | "about" | "projects" | "contact";
 
 // Items with an href are separate pages; the rest are sections of the home page.
 const NAV: { id: string; label: string; href?: string; page?: Page }[] = [
-  { id: "experience", label: "Experience" },
-  { id: "work", label: "Work" },
+  { id: "about", label: "About", href: "/about/", page: "about" },
+  { id: "work", label: "Work", href: "/about/#work" },
   { id: "projects", label: "Projects", href: "/projects/", page: "projects" },
   { id: "skills", label: "Skills" },
-  { id: "contact", label: "Contact" },
+  { id: "contact", label: "Contact", href: "/contact/", page: "contact" },
 ];
 
 const SECTION_IDS = NAV.filter((item) => !item.href).map((item) => item.id);
@@ -21,7 +21,7 @@ export function Header({ page }: { page: Page }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line/70 bg-bg/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-8">
+      <div className="page-container flex h-16 items-center justify-between gap-4">
         <a href={page === "home" ? "#top" : "/"} className="font-display text-lg font-bold tracking-tight">
           {profile.name}
         </a>

@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import { ArrowRight, Download, MapPin } from "lucide-react";
 import { ExternalLink } from "./ExternalLink";
+import { FlipCard } from "./FlipCard";
 import { profile } from "../data/profile";
 
 function Letters({ text, offset = 0 }: { text: string; offset?: number }) {
@@ -60,16 +61,15 @@ export function Hero() {
                 Email
               </a>
             </li>
+            <li>
+              <a href="/about/" className="text-link">
+                More about me
+              </a>
+            </li>
           </ul>
         </div>
 
-        <aside aria-label="What I'm working on" className="rounded-2xl border border-line bg-surface p-5">
-          <p className="flex items-center gap-2.5 font-semibold">
-            <span aria-hidden="true" className="live-dot" />
-            {profile.now.role}
-          </p>
-          <p className="mt-1.5 text-muted">{profile.now.detail}</p>
-        </aside>
+        <FlipCard />
       </div>
     </section>
   );
