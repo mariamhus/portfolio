@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Header, type Page } from "./Header";
+import { Starfield } from "./Starfield";
 import { profile } from "../data/profile";
 
 export function Layout({ page, children }: { page: Page; children: ReactNode }) {
@@ -8,6 +9,7 @@ export function Layout({ page, children }: { page: Page; children: ReactNode }) 
       <a href="#main" className="skip-link">
         Skip to content
       </a>
+      <Starfield />
       <Header page={page} />
       <main id="main" className="mx-auto max-w-6xl px-4 sm:px-8">
         {children}

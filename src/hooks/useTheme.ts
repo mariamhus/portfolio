@@ -1,38 +1,51 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-type Theme = "light" | "dark";
+export type Theme = "light" | "dark";
+export type SkyTransition = "sunrise" | "sunset";
 
-function systemTheme(): Theme {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+const SWITCH_AT = 950;
+const DURATION = 1600;
+
+function applyTheme(next: Theme) {
+  document.documentElement.dataset.theme = next;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "light" ? "#eef6ff" : "#05060f");
+  try {
+    window.localStorage.setItem("portfolio:theme", next);
+  } catch {
+    // Storage can be blocked; the theme still applies for this visit.
+  }
 }
 
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const stored = document.documentElement.dataset.theme;
-    return stored === "light" || stored === "dark" ? stored : systemTheme();
-  });
+  const [theme, setTheme] = useState<Theme>(() => (document.documentElement.dataset.theme === "light" ? "light" : "dark"));
+  const [transition, setTransition] = useState<SkyTransition | null>(null);
+  const timers = useRef<number[]>([]);
 
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    function onChange() {
-      if (!document.documentElement.dataset.theme) setTheme(systemTheme());
-    }
-    media.addEventListener("change", onChange);
-    return () => media.removeEventListener("change", onChange);
-  }, []);
+  useEffect(() => () => timers.current.forEach((id) => window.clearTimeout(id)), []);
 
-  const toggle = useCallback(() => {
-    setTheme((current) => {
-      const next: Theme = current === "dark" ? "light" : "dark";
-      document.documentElement.dataset.theme = next;
-      try {
-        window.localStorage.setItem("portfolio:theme", next);
-      } catch {
-        return next;
+  const change = useCallback(
+    (next: Theme) => {
+      if (transition || next === theme) return;
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        applyTheme(next);
+        setTheme(next);
+        return;
       }
-      return next;
-    });
-  }, []);
 
-  return { theme, toggle };
+      setTransition(next === "light" ? "sunrise" : "sunset");
+      timers.current = [
+        window.setTimeout(() => {
+          applyTheme(next);
+          setTheme(next);
+        }, SWITCH_AT),
+        window.setTimeout(() => setTransition(null), DURATION),
+      ];
+    },
+    [theme, transition],
+  );
+
+  const toggle = useCallback(() => change(theme === "dark" ? "light" : "dark"), [change, theme]);
+
+  return { theme, transition, change, toggle };
 }

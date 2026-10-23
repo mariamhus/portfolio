@@ -1,6 +1,6 @@
-import { Download, Moon, Sun } from "lucide-react";
+import { Download } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
 import { useActiveSection } from "../hooks/useActiveSection";
-import { useTheme } from "../hooks/useTheme";
 import { profile } from "../data/profile";
 
 export type Page = "home" | "projects";
@@ -18,7 +18,6 @@ const SECTION_IDS = NAV.filter((item) => !item.href).map((item) => item.id);
 
 export function Header({ page }: { page: Page }) {
   const active = useActiveSection(SECTION_IDS);
-  const { theme, toggle } = useTheme();
 
   return (
     <header className="sticky top-0 z-40 border-b border-line/70 bg-bg/80 backdrop-blur-xl">
@@ -42,15 +41,7 @@ export function Header({ page }: { page: Page }) {
           </ul>
         </nav>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={toggle}
-            aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
-            title={theme === "dark" ? "Light theme" : "Dark theme"}
-            className="grid size-10 place-items-center rounded-full text-muted transition-colors hover:bg-surface hover:text-ink"
-          >
-            {theme === "dark" ? <Sun aria-hidden="true" className="size-[18px]" /> : <Moon aria-hidden="true" className="size-[18px]" />}
-          </button>
+          <ThemeToggle />
           <a href={profile.cv} download className="button-secondary h-10 px-4 text-sm">
             <Download aria-hidden="true" className="size-4" />
             CV

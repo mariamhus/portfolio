@@ -19,6 +19,8 @@ My personal portfolio site: who I am, the projects I've built, my experience, an
 - Social preview image and meta tags for sharing on LinkedIn and other sites
 - Fonts bundled with the site and screenshots in WebP, so pages load fast
 
+See [CHANGELOG.md](./CHANGELOG.md) for what has changed and when.
+
 ## Updating the content
 
 All the text lives in one file, `src/data/profile.ts`: intro, about, projects, work, experience, skills, education, and links. Edit it and the page updates; no component changes are needed.
