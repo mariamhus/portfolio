@@ -404,7 +404,7 @@ body {
 }
 
 .email-link {
-  font-size: clamp(1.4rem, 5vw, 2.6rem);
+  font-size: clamp(1.15rem, 4.6vw, 1.85rem);
   letter-spacing: -0.02em;
   overflow-wrap: anywhere;
   text-decoration: underline;
@@ -619,6 +619,49 @@ body {
 
 /* ---------- Loading screen ---------- */
 
+/* Skill logos that fly out from behind the name. */
+.loader-icons {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.loader-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(1.75rem, 3.2vw, 2.75rem);
+  height: clamp(1.75rem, 3.2vw, 2.75rem);
+  margin: calc(clamp(1.75rem, 3.2vw, 2.75rem) / -2);
+  opacity: 0;
+  filter: drop-shadow(0 6px 14px rgb(0 0 0 / 0.25));
+  animation: icon-fly 1700ms cubic-bezier(0.2, 0.6, 0.3, 1) var(--delay) both;
+}
+
+.loader-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes icon-fly {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.3) rotate(0deg);
+  }
+  15% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) scale(1.15) rotate(var(--spin));
+  }
+}
+
 #loader {
   display: none;
 }
@@ -637,7 +680,7 @@ body {
     radial-gradient(50rem 30rem at 50% 45%, var(--aura-a), transparent 70%),
     var(--bg);
   /* If the script never runs, the loader still gets out of the way. */
-  animation: loader-failsafe 0s 6s forwards;
+  animation: loader-failsafe 0s 7s forwards;
 }
 
 :root[data-loading="done"] #loader {
@@ -777,11 +820,6 @@ body {
   position: relative;
 }
 
-/* Pinned (large screens): one screen, plus a short run of scrolling for each project after the first. */
-.spot-pin[data-pinned] {
-  height: calc(100vh + var(--steps) * var(--step) * 100vh);
-}
-
 .spot-sticky {
   /* The browser window is sized from the available height, so it never changes size between projects. */
   --stage-h: calc((100vw - 2rem) * 0.625 + 3.75rem);
@@ -801,17 +839,6 @@ body {
   .spot-sticky {
     --stage-h: min(40vw, 34rem);
   }
-}
-
-.spot-pin[data-pinned] .spot-sticky {
-  /* Pinned, everything has to fit on one screen, so the window takes whatever height is left. */
-  --stage-h: min(60vh, 44vw, calc(100vh - 26.5rem));
-  position: sticky;
-  top: 4rem;
-  height: calc(100vh - 4rem);
-  justify-content: flex-start;
-  padding-top: clamp(1rem, 3.5vh, 2.5rem);
-  gap: clamp(1rem, 2.4vh, 1.75rem);
 }
 
 .spot-head {
@@ -959,6 +986,35 @@ body {
   transform: translateX(-1.1rem);
 }
 
+/* Fills until the spotlight moves on by itself; freezes while paused. */
+.spot-timer {
+  position: relative;
+  width: min(var(--slide-w), 100%);
+  height: 2px;
+  margin: -0.75rem auto 0;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--line);
+}
+
+.spot-timer > span {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: left;
+  animation: flip-timer var(--interval) linear both;
+}
+
+.spot-timer > span[data-paused] {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spot-timer {
+    display: none;
+  }
+}
+
 /* Project details, lined up with the browser window above. */
 .spot-info {
   display: flex;
@@ -1075,15 +1131,35 @@ body {
   display: block;
   min-height: 8.75rem;
   padding: 1.25rem;
-  border: 1px solid var(--line);
+  /* Frosted glass: a see-through tint over a blur of the sky behind, a light top edge, and a soft sheen. */
+  border: 1px solid var(--glass-edge);
   border-radius: 1rem;
   background:
-    linear-gradient(var(--surface), var(--surface)),
-    var(--bg);
+    linear-gradient(135deg, var(--glass-sheen), transparent 55%),
+    var(--glass-tint);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 20px 45px -28px rgb(0 0 0 / 0.55);
   backface-visibility: hidden;
   transition:
     border-color 300ms ease,
     box-shadow 300ms ease;
+}
+
+:root {
+  --glass-tint: rgb(255 255 255 / 0.06);
+  --glass-sheen: rgb(255 255 255 / 0.1);
+  --glass-edge: rgb(255 255 255 / 0.16);
+  --glass-highlight: rgb(255 255 255 / 0.18);
+}
+
+:root[data-theme="light"] {
+  --glass-tint: rgb(255 255 255 / 0.26);
+  --glass-sheen: rgb(255 255 255 / 0.45);
+  --glass-edge: rgb(255 255 255 / 0.7);
+  --glass-highlight: rgb(255 255 255 / 0.9);
 }
 
 .flip-face + .flip-face {
@@ -1160,15 +1236,6 @@ body {
 
 /* ---------- About ---------- */
 
-.about-word {
-  display: inline-block;
-  white-space: nowrap;
-}
-
-.about-letter {
-  display: inline-block;
-}
-
 .about-card-slot {
   list-style: none;
 }
@@ -1201,13 +1268,13 @@ body {
   pointer-events: none;
 }
 
-.about-card:is(:hover, :focus-visible, [data-open]) {
+.about-card:is(:focus-visible, [data-open]) {
   border-color: color-mix(in srgb, var(--accent) 60%, transparent);
   transform: translateY(-4px);
   box-shadow: 0 30px 60px -36px color-mix(in srgb, var(--accent) 70%, transparent);
 }
 
-.about-card:is(:hover, :focus-visible, [data-open])::before {
+.about-card:is(:focus-visible, [data-open])::before {
   opacity: 1;
 }
 
@@ -1225,7 +1292,7 @@ body {
   overflow: hidden;
 }
 
-.about-card:is(:hover, :focus-visible, [data-open]) .about-card-more {
+.about-card:is(:focus-visible, [data-open]) .about-card-more {
   grid-template-rows: 1fr;
   opacity: 1;
 }
@@ -1262,12 +1329,12 @@ body {
   fill: var(--accent);
 }
 
-.about-card:is(:hover, :focus-visible, [data-open]) .viz-lines path {
+.about-card:is(:focus-visible, [data-open]) .viz-lines path {
   stroke-dashoffset: 0;
   opacity: 1;
 }
 
-.about-card:is(:hover, :focus-visible, [data-open]) .viz-leaf {
+.about-card:is(:focus-visible, [data-open]) .viz-leaf {
   fill: color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
@@ -1280,7 +1347,7 @@ body {
   transition-delay: calc(var(--i) * 60ms);
 }
 
-.about-card:is(:hover, :focus-visible, [data-open]) .viz-bar {
+.about-card:is(:focus-visible, [data-open]) .viz-bar {
   transform: scaleY(calc(0.2 + var(--i) * 0.16));
   fill: var(--accent);
 }
@@ -1318,69 +1385,8 @@ body {
   fill: var(--muted);
 }
 
-.about-card:is(:hover, :focus-visible, [data-open]) .viz-focus {
+.about-card:is(:focus-visible, [data-open]) .viz-focus {
   opacity: 1;
-}
-
-/* "A little more about me": a small stacked deck with one fact on top. */
-.about-facts {
-  display: grid;
-  gap: 1.5rem;
-  align-items: center;
-  margin-top: 3rem;
-  padding: 1.5rem;
-  border: 1px solid var(--line);
-  border-radius: 1.25rem;
-  background: var(--surface);
-}
-
-@media (min-width: 900px) {
-  .about-facts {
-    grid-template-columns: 15rem minmax(0, 1fr) auto;
-    gap: 2.5rem;
-    padding: 1.75rem 2rem;
-  }
-}
-
-.about-deck {
-  position: relative;
-  min-height: 5.5rem;
-  display: grid;
-  align-items: center;
-}
-
-.about-deck::before,
-.about-deck::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  background: var(--bg);
-}
-
-.about-deck::before {
-  transform: rotate(-2.5deg) translateY(6px);
-  opacity: 0.5;
-}
-
-.about-deck::after {
-  transform: rotate(1.5deg) translateY(3px);
-  opacity: 0.8;
-}
-
-.about-fact {
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  padding: 1rem 1.25rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
-  border-radius: 1rem;
-  background:
-    linear-gradient(color-mix(in srgb, var(--accent) 8%, transparent), color-mix(in srgb, var(--accent) 8%, transparent)),
-    var(--bg);
-  font-size: 1.05rem;
-  font-weight: 500;
 }
 
 /* The line that leads down into Professional work, drawn in the timeline's accent color. */
@@ -1418,40 +1424,25 @@ body {
 
 /* Entrance: the greeting rises letter by letter, then the intro, cards, and facts follow. */
 @media (prefers-reduced-motion: no-preference) {
-  .about .about-letter,
   .about .about-intro,
-  .about .about-card-slot,
-  .about .about-facts {
+  .about .about-card-slot {
     opacity: 0;
   }
 
-  .about[data-inview] .about-letter {
-    animation: letter-in 900ms var(--ease-out) both;
-    animation-delay: calc(var(--l) * 35ms);
-  }
-
   .about[data-inview] .about-intro {
-    animation: about-in 800ms var(--ease-out) 500ms both;
+    animation: about-in 700ms var(--ease-out) both;
   }
 
   .about[data-inview] .about-card-slot {
     animation: about-in 750ms var(--ease-out) both;
-    animation-delay: calc(750ms + var(--i) * 140ms);
+    animation-delay: calc(250ms + var(--i) * 140ms);
   }
 
-  .about[data-inview] .about-facts {
-    animation: about-in 750ms var(--ease-out) 1250ms both;
-  }
-
-  .about-fact {
-    animation: fact-in 500ms var(--ease-out);
-  }
-
-  .about-card:is(:hover, :focus-visible, [data-open]) .viz-focus {
+  .about-card:is(:focus-visible, [data-open]) .viz-focus {
     animation: focus-walk 2.4s ease-in-out infinite;
   }
 
-  .about-card:is(:hover, :focus-visible, [data-open]) .viz-speed {
+  .about-card:is(:focus-visible, [data-open]) .viz-speed {
     animation: speed-dash 1s linear infinite;
   }
 }
@@ -1465,13 +1456,6 @@ body {
   to {
     opacity: 1;
     transform: none;
-  }
-}
-
-@keyframes fact-in {
-  from {
-    opacity: 0;
-    transform: translateY(-14px) rotate(-3deg);
   }
 }
 
@@ -1493,6 +1477,54 @@ body {
 @keyframes speed-dash {
   to {
     stroke-dashoffset: -18;
+  }
+}
+
+/* Hover opens a card only with a real mouse; on touch screens a tap opens it and the next tap closes it,
+   because phones keep a tapped element "hovered" until you tap somewhere else. */
+@media (hover: hover) and (pointer: fine) {
+  .about-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+    transform: translateY(-4px);
+    box-shadow: 0 30px 60px -36px color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+
+  .about-card:hover::before {
+    opacity: 1;
+  }
+
+  .about-card:hover .about-card-more {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+
+  .about-card:hover .viz-lines path {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  .about-card:hover .viz-leaf {
+    fill: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .about-card:hover .viz-bar {
+    transform: scaleY(calc(0.2 + var(--i) * 0.16));
+    fill: var(--accent);
+  }
+
+  .about-card:hover .viz-focus {
+    opacity: 1;
+  }
+
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .about-card:hover .viz-focus {
+    animation: focus-walk 2.4s ease-in-out infinite;
+  }
+
+  .about-card:hover .viz-speed {
+    animation: speed-dash 1s linear infinite;
   }
 }
 
@@ -1730,14 +1762,15 @@ textarea.field {
 
 /* ---------- Project view (full screen, opened from "View details") ---------- */
 
+/* A centered window with the page dimmed around it; on small screens it uses nearly the whole screen. */
 .project-view {
   position: fixed;
-  inset: 0.75rem;
-  width: auto;
-  height: auto;
+  inset: 0;
+  width: min(68rem, calc(100% - 2rem));
+  height: min(44rem, calc(100dvh - 2rem));
   max-width: none;
   max-height: none;
-  margin: 0;
+  margin: auto;
   padding: 0;
   overflow: hidden;
   border: 1px solid var(--line);
@@ -1824,7 +1857,7 @@ html:has(.project-view[open]) {
 
 /* Dark device frame that holds the site's screens. It scrolls on its own, and by hand. */
 .pv-frame {
-  height: 65dvh;
+  height: min(65dvh, 34rem);
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: none;
@@ -1883,9 +1916,9 @@ html:has(.project-view[open]) {
 
   .pv-grid {
     height: 100%;
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr);
     grid-template-rows: minmax(0, 1fr);
-    gap: 3rem;
+    gap: 2.25rem;
     padding: 0 2rem 2rem;
   }
 
@@ -1971,4 +2004,83 @@ html:has(.project-view[open]) {
   .icon-button {
     @apply grid size-10 place-items-center rounded-full border border-line text-muted transition-colors hover:border-muted hover:text-ink;
   }
+}
+
+/* ---------- Seasonal cursor ---------- */
+
+/* A cursor shaped like the season (flower, crescent moon, leaf, snowflake), in that season's accent color
+   for day or night, with a white halo so it shows on any background. Over anything clickable the shape
+   shrinks into a glowing ring with a sparkle, so it's clear the element can be clicked. */
+
+:root[data-theme="light"][data-season="spring"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Cg fill='%23be185d' stroke='%23560b2a' stroke-width='1.8'%3E%3Cellipse cx='16' cy='7.5' rx='5' ry='6.5'/%3E%3Cellipse cx='16' cy='24.5' rx='5' ry='6.5'/%3E%3Cellipse cx='7.5' cy='16' rx='6.5' ry='5'/%3E%3Cellipse cx='24.5' cy='16' rx='6.5' ry='5'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='4.6' fill='%23ffd54a' stroke='%23560b2a' stroke-width='1.8'/%3E%3C/g%3E%3C/svg%3E") 16 16, auto;
+}
+
+:root:not([data-theme="light"])[data-season="spring"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Cg fill='%23e7a6ff' stroke='%2345324d' stroke-width='1.8'%3E%3Cellipse cx='16' cy='7.5' rx='5' ry='6.5'/%3E%3Cellipse cx='16' cy='24.5' rx='5' ry='6.5'/%3E%3Cellipse cx='7.5' cy='16' rx='6.5' ry='5'/%3E%3Cellipse cx='24.5' cy='16' rx='6.5' ry='5'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='4.6' fill='%23ffd54a' stroke='%2345324d' stroke-width='1.8'/%3E%3C/g%3E%3C/svg%3E") 16 16, auto;
+}
+
+:root[data-theme="light"][data-season="summer"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Cpath d='M19 3.5A12.5 12.5 0 1 0 28.5 22 10 10 0 0 1 19 3.5z' fill='%231859c9' stroke='%230b285a' stroke-width='2' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E") 9 16, auto;
+}
+
+:root:not([data-theme="light"])[data-season="summer"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Cpath d='M19 3.5A12.5 12.5 0 1 0 28.5 22 10 10 0 0 1 19 3.5z' fill='%23a39bff' stroke='%23312f4d' stroke-width='2' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E") 9 16, auto;
+}
+
+:root[data-theme="light"][data-season="autumn"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Cpath d='M3 3c13-1 25 4 26 16-1 8-8 11-15 10C6 27 2 18 3 3z' fill='%23b4410c' stroke='%23511d05' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M3 3l15 16M11 11l5-1M14 15l1 5' fill='none' stroke='%23511d05' stroke-width='1.6' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") 3 3, auto;
+}
+
+:root:not([data-theme="light"])[data-season="autumn"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Cpath d='M3 3c13-1 25 4 26 16-1 8-8 11-15 10C6 27 2 18 3 3z' fill='%23ffb877' stroke='%234d3724' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M3 3l15 16M11 11l5-1M14 15l1 5' fill='none' stroke='%234d3724' stroke-width='1.6' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") 3 3, auto;
+}
+
+:root[data-theme="light"][data-season="winter"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Cg stroke='%230d2945' stroke-width='5' stroke-linecap='round'%3E%3Cpath d='M16 3v26M4.7 9.5l22.6 13M4.7 22.5l22.6-13'/%3E%3C/g%3E%3Cg stroke='%231d5a99' stroke-width='2.6' stroke-linecap='round' fill='none'%3E%3Cpath d='M16 3v26M4.7 9.5l22.6 13M4.7 22.5l22.6-13M12.5 5.5L16 8l3.5-2.5M12.5 26.5L16 24l3.5 2.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") 16 16, auto;
+}
+
+:root:not([data-theme="light"])[data-season="winter"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Cg stroke='%234d303f' stroke-width='5' stroke-linecap='round'%3E%3Cpath d='M16 3v26M4.7 9.5l22.6 13M4.7 22.5l22.6-13'/%3E%3C/g%3E%3Cg stroke='%23ff9fd2' stroke-width='2.6' stroke-linecap='round' fill='none'%3E%3Cpath d='M16 3v26M4.7 9.5l22.6 13M4.7 22.5l22.6-13M12.5 5.5L16 8l3.5-2.5M12.5 26.5L16 24l3.5 2.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") 16 16, auto;
+}
+
+/* Everything else inherits the season cursor, including text fields. */
+:root[data-season] *,
+:root[data-season] *::before,
+:root[data-season] *::after {
+  cursor: inherit !important;
+}
+
+/* Clickable things get the hover version; their icons and text inherit it. */
+
+:root[data-theme="light"][data-season="spring"] :is(a, button, summary, label, select, [role="tab"], [role="button"], [tabindex="0"]) {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Ccircle cx='16' cy='16' r='14.5' fill='%23be185d' fill-opacity='0.18' stroke='%23be185d' stroke-width='2'/%3E%3Cg transform='translate(5.44 5.44) scale(0.66)'%3E%3Cg fill='%23be185d' stroke='%23560b2a' stroke-width='1.8'%3E%3Cellipse cx='16' cy='7.5' rx='5' ry='6.5'/%3E%3Cellipse cx='16' cy='24.5' rx='5' ry='6.5'/%3E%3Cellipse cx='7.5' cy='16' rx='6.5' ry='5'/%3E%3Cellipse cx='24.5' cy='16' rx='6.5' ry='5'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='4.6' fill='%23ffd54a' stroke='%23560b2a' stroke-width='1.8'/%3E%3C/g%3E%3Cpath d='M26 2.5l1.1 2.6 2.6 1.1-2.6 1.1L26 9.9l-1.1-2.6-2.6-1.1 2.6-1.1z' fill='%23be185d' stroke='%23560b2a' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E") 16 16, pointer !important;
+}
+
+:root:not([data-theme="light"])[data-season="spring"] :is(a, button, summary, label, select, [role="tab"], [role="button"], [tabindex="0"]) {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Ccircle cx='16' cy='16' r='14.5' fill='%23e7a6ff' fill-opacity='0.18' stroke='%23e7a6ff' stroke-width='2'/%3E%3Cg transform='translate(5.44 5.44) scale(0.66)'%3E%3Cg fill='%23e7a6ff' stroke='%2345324d' stroke-width='1.8'%3E%3Cellipse cx='16' cy='7.5' rx='5' ry='6.5'/%3E%3Cellipse cx='16' cy='24.5' rx='5' ry='6.5'/%3E%3Cellipse cx='7.5' cy='16' rx='6.5' ry='5'/%3E%3Cellipse cx='24.5' cy='16' rx='6.5' ry='5'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='4.6' fill='%23ffd54a' stroke='%2345324d' stroke-width='1.8'/%3E%3C/g%3E%3Cpath d='M26 2.5l1.1 2.6 2.6 1.1-2.6 1.1L26 9.9l-1.1-2.6-2.6-1.1 2.6-1.1z' fill='%23e7a6ff' stroke='%2345324d' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E") 16 16, pointer !important;
+}
+
+:root[data-theme="light"][data-season="summer"] :is(a, button, summary, label, select, [role="tab"], [role="button"], [tabindex="0"]) {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Ccircle cx='16' cy='16' r='14.5' fill='%231859c9' fill-opacity='0.18' stroke='%231859c9' stroke-width='2'/%3E%3Cg transform='translate(5.44 5.44) scale(0.66)'%3E%3Cpath d='M19 3.5A12.5 12.5 0 1 0 28.5 22 10 10 0 0 1 19 3.5z' fill='%231859c9' stroke='%230b285a' stroke-width='2' stroke-linejoin='round'/%3E%3C/g%3E%3Cpath d='M26 2.5l1.1 2.6 2.6 1.1-2.6 1.1L26 9.9l-1.1-2.6-2.6-1.1 2.6-1.1z' fill='%231859c9' stroke='%230b285a' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E") 11 16, pointer !important;
+}
+
+:root:not([data-theme="light"])[data-season="summer"] :is(a, button, summary, label, select, [role="tab"], [role="button"], [tabindex="0"]) {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Ccircle cx='16' cy='16' r='14.5' fill='%23a39bff' fill-opacity='0.18' stroke='%23a39bff' stroke-width='2'/%3E%3Cg transform='translate(5.44 5.44) scale(0.66)'%3E%3Cpath d='M19 3.5A12.5 12.5 0 1 0 28.5 22 10 10 0 0 1 19 3.5z' fill='%23a39bff' stroke='%23312f4d' stroke-width='2' stroke-linejoin='round'/%3E%3C/g%3E%3Cpath d='M26 2.5l1.1 2.6 2.6 1.1-2.6 1.1L26 9.9l-1.1-2.6-2.6-1.1 2.6-1.1z' fill='%23a39bff' stroke='%23312f4d' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E") 11 16, pointer !important;
+}
+
+:root[data-theme="light"][data-season="autumn"] :is(a, button, summary, label, select, [role="tab"], [role="button"], [tabindex="0"]) {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Ccircle cx='16' cy='16' r='14.5' fill='%23b4410c' fill-opacity='0.18' stroke='%23b4410c' stroke-width='2'/%3E%3Cg transform='translate(5.44 5.44) scale(0.66)'%3E%3Cpath d='M3 3c13-1 25 4 26 16-1 8-8 11-15 10C6 27 2 18 3 3z' fill='%23b4410c' stroke='%23511d05' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M3 3l15 16M11 11l5-1M14 15l1 5' fill='none' stroke='%23511d05' stroke-width='1.6' stroke-linecap='round'/%3E%3C/g%3E%3Cpath d='M26 2.5l1.1 2.6 2.6 1.1-2.6 1.1L26 9.9l-1.1-2.6-2.6-1.1 2.6-1.1z' fill='%23b4410c' stroke='%23511d05' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E") 7 7, pointer !important;
+}
+
+:root:not([data-theme="light"])[data-season="autumn"] :is(a, button, summary, label, select, [role="tab"], [role="button"], [tabindex="0"]) {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Ccircle cx='16' cy='16' r='14.5' fill='%23ffb877' fill-opacity='0.18' stroke='%23ffb877' stroke-width='2'/%3E%3Cg transform='translate(5.44 5.44) scale(0.66)'%3E%3Cpath d='M3 3c13-1 25 4 26 16-1 8-8 11-15 10C6 27 2 18 3 3z' fill='%23ffb877' stroke='%234d3724' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M3 3l15 16M11 11l5-1M14 15l1 5' fill='none' stroke='%234d3724' stroke-width='1.6' stroke-linecap='round'/%3E%3C/g%3E%3Cpath d='M26 2.5l1.1 2.6 2.6 1.1-2.6 1.1L26 9.9l-1.1-2.6-2.6-1.1 2.6-1.1z' fill='%23ffb877' stroke='%234d3724' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E") 7 7, pointer !important;
+}
+
+:root[data-theme="light"][data-season="winter"] :is(a, button, summary, label, select, [role="tab"], [role="button"], [tabindex="0"]) {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Ccircle cx='16' cy='16' r='14.5' fill='%231d5a99' fill-opacity='0.18' stroke='%231d5a99' stroke-width='2'/%3E%3Cg transform='translate(5.44 5.44) scale(0.66)'%3E%3Cg stroke='%230d2945' stroke-width='5' stroke-linecap='round'%3E%3Cpath d='M16 3v26M4.7 9.5l22.6 13M4.7 22.5l22.6-13'/%3E%3C/g%3E%3Cg stroke='%231d5a99' stroke-width='2.6' stroke-linecap='round' fill='none'%3E%3Cpath d='M16 3v26M4.7 9.5l22.6 13M4.7 22.5l22.6-13M12.5 5.5L16 8l3.5-2.5M12.5 26.5L16 24l3.5 2.5'/%3E%3C/g%3E%3C/g%3E%3Cpath d='M26 2.5l1.1 2.6 2.6 1.1-2.6 1.1L26 9.9l-1.1-2.6-2.6-1.1 2.6-1.1z' fill='%231d5a99' stroke='%230d2945' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E") 16 16, pointer !important;
+}
+
+:root:not([data-theme="light"])[data-season="winter"] :is(a, button, summary, label, select, [role="tab"], [role="button"], [tabindex="0"]) {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg style='filter:drop-shadow(0 0 1.2px %23fff) drop-shadow(0 0 1.2px %23fff)'%3E%3Ccircle cx='16' cy='16' r='14.5' fill='%23ff9fd2' fill-opacity='0.18' stroke='%23ff9fd2' stroke-width='2'/%3E%3Cg transform='translate(5.44 5.44) scale(0.66)'%3E%3Cg stroke='%234d303f' stroke-width='5' stroke-linecap='round'%3E%3Cpath d='M16 3v26M4.7 9.5l22.6 13M4.7 22.5l22.6-13'/%3E%3C/g%3E%3Cg stroke='%23ff9fd2' stroke-width='2.6' stroke-linecap='round' fill='none'%3E%3Cpath d='M16 3v26M4.7 9.5l22.6 13M4.7 22.5l22.6-13M12.5 5.5L16 8l3.5-2.5M12.5 26.5L16 24l3.5 2.5'/%3E%3C/g%3E%3C/g%3E%3Cpath d='M26 2.5l1.1 2.6 2.6 1.1-2.6 1.1L26 9.9l-1.1-2.6-2.6-1.1 2.6-1.1z' fill='%23ff9fd2' stroke='%234d303f' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E") 16 16, pointer !important;
 }

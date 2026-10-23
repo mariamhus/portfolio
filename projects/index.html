@@ -37,12 +37,8 @@
           document.documentElement.dataset.theme = "light";
           document.querySelector('meta[name="theme-color"]').setAttribute("content", "#eef6ff");
         }
-        // Loading screen: once per visit, and never for visitors who ask for reduced motion.
-        var seen = false;
-        try {
-          seen = sessionStorage.getItem("portfolio:loaded") === "1";
-        } catch (error) {}
-        if (!seen && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.dataset.loading = "";
+        // Loading screen on every visit and refresh, except for visitors who ask for reduced motion.
+        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.dataset.loading = "";
       })();
     </script>
   </head>

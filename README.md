@@ -9,21 +9,18 @@ My personal portfolio site: who I am, the projects I've built, my experience, an
 ## Features
 
 - Animated loading screen, shown once per visit
-- Home page with a hero card that flips on its own between what I'm working on and the "A little more about me" facts (click to flip, hover or the pause button to stop), a featured projects showcase, Skills, and Contact sections
-- An About page at `/about/` that builds in as you scroll: "Hello, I'm Mariam." letter by letter, the intro, three cards (Architecture, Performance, User Experience) that open on hover, focus, or tap with a small animated visual, a deck of facts, and a line that leads into Professional work below it
+- One page with About, Professional work, Projects, Skills, and Contact, plus a Projects page at `/projects/` with every project in a grid
+- Hero card that flips on its own between what I'm working on and a few facts about me (click to flip, hover or the pause button to stop)
+- About: a short intro and three cards (Architecture, Performance, User Experience) that open on hover, focus, or tap with a small animated visual, and a line that leads into Professional work
 - Professional work as a timeline: the line fills as you scroll, and each project lights up when the fill reaches it
+- Projects spotlight: one project at a time in a large browser window; arrows, tabs, arrow keys, or a swipe glide the next one in from the side
+- A full-screen project view for each project: the details on the left, and real desktop and phone screenshots of the live site gliding up and down on their own inside a dark device frame (hover to pause, or scroll the frame yourself)
 - Skills as two rows of technology logos that scroll in opposite directions
-- Projects showcase: stacked, tilted browser windows with tabs for each project, which advance on their own until you pick one
-- A separate Projects page at `/projects/` with every project as a short card (three columns, four on large monitors)
-- A Contact page at `/contact/` with an animated illustrated Mariam: she follows the pointer, watches the field you type in, greets you by name, looks worried at a mistyped email, gets excited over the Send button, and throws a paper plane when you send. The message opens in your email app, already addressed and filled in
-- A full-screen project view for each project: the details on the left, and real desktop and phone screenshots of the live site gliding up and down on their own inside a dark device frame on the right (hover to pause, or scroll the frame yourself)
-- Navigation that highlights the section you're reading
+- Contact form that opens the visitor's email app with the message addressed and filled in, next to the email address, a copy button, and links
 - Seasonal themes: spring petals, summer fireflies, autumn leaves, or winter snow with an aurora, chosen from today's date or picked in the header
-- Day and night skies with a toggle that plays a sunrise or sunset: a starfield with parallax and shooting stars at night. Without a saved choice, spring and summer open in day mode and autumn and winter at night
-- Text that settles into place word by word as you scroll, and a letter-by-letter animation on the name
-- Downloadable CV and a one-click "Copy email" button
+- Day and night skies with a toggle that plays a sunrise or sunset; a starfield with parallax and shooting stars at night
 - Responsive from small phones to 2K and 4K monitors: on large screens the whole layout scales up and widens, so it keeps its proportions
-- Accessible: skip link, semantic landmarks, labelled links, visible focus, and reduced-motion support that stops every animation
+- Accessible: skip link, semantic landmarks, labelled controls, visible focus, keyboard support, and reduced-motion support that stops every animation
 - Social preview image and meta tags for sharing on LinkedIn and other sites
 - Fonts bundled with the site and screenshots in WebP, so pages load fast
 
@@ -70,9 +67,7 @@ Add `?season=` and `?theme=` to the address to see any combination without chang
 
 ```
 index.html                 Home page
-about/index.html           About page
 projects/index.html        Projects page
-contact/index.html         Contact page
 public/
 ├── projects/              Project screenshots
 ├── Mariam_Hussein_CV.pdf
@@ -87,7 +82,7 @@ src/
 │   ├── ProjectDetails.tsx   "View details" dialog
 │   ├── TechMarquee.tsx      Skills: scrolling strip of technology logos
 │   ├── FlipCard.tsx         Hero card that flips between the current role and facts
-│   ├── Character.tsx        Animated character on the Contact page
+│   ├── ContactForm.tsx      Message form in the Contact section
 │   ├── WorkProjects.tsx     Professional work timeline
 │   ├── Starfield.tsx        Animated background (stars, seasonal particles, aurora, fireflies)
 │   ├── FallingWords.tsx     Scroll-driven word animation
@@ -103,18 +98,14 @@ src/
 │   ├── seasonParticles.ts   Petals, leaves, and snow
 │   └── nightEffects.ts      Fireflies and aurora
 ├── App.tsx                Home page
-├── AboutPage.tsx          About page
-├── about.tsx              Entry point for the About page
 ├── ProjectsPage.tsx       Projects page
 ├── projects.tsx           Entry point for the Projects page
-├── ContactPage.tsx        Contact page with the message form
-├── contact.tsx            Entry point for the Contact page
 ├── index.css              Theme and season colors, fonts, and shared styles
 └── main.tsx               Entry point for the home page
 ```
 
 ## Deploying
 
-Import the repository at [vercel.com/new](https://vercel.com/new) and click **Deploy**. Vite is detected automatically, and all four pages are built.
+Import the repository at [vercel.com/new](https://vercel.com/new) and click **Deploy**. Vite is detected automatically, and both pages are built.
 
 The social preview tags (`og:image`, `og:url`, and the canonical link) need absolute URLs. On Vercel they're filled in automatically from the production domain, including a custom domain like `www.mariam-hussein.website`. On another host, set the `SITE_URL` environment variable to the full address, for example `SITE_URL=https://www.mariam-hussein.website`.

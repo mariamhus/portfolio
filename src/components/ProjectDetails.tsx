@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { ArrowUpRight, Code2, X } from "lucide-react";
 import { galleries, type Shot } from "../data/gallery";
+import { TechIcon } from "./TechIcon";
 import type { Project } from "../data/profile";
 
 interface ProjectDetailsProps {
@@ -124,12 +125,12 @@ export function ProjectDetails({ project, projects, onClose }: ProjectDetailsPro
           <div key={project.name} className="pv-content">
             <div className="pv-grid">
               <div className="pv-info">
-                <h2 id="project-view-title" className="font-display text-[clamp(2.5rem,4.5vw,4.25rem)] leading-[0.95] font-bold tracking-tight">
+                <h2 id="project-view-title" className="font-display text-[clamp(2.25rem,3.6vw,3.25rem)] leading-[0.95] font-bold tracking-tight">
                   {project.name}
                 </h2>
-                <p className="mt-2 text-xl text-muted italic">({project.tagline.replace(/\.$/, "")})</p>
-                <p className="mt-6 leading-relaxed">{project.summary}</p>
-                <ul className="mt-5 space-y-2.5 text-[0.95rem] leading-relaxed text-muted">
+                <p className="mt-2 text-lg text-muted italic">({project.tagline.replace(/\.$/, "")})</p>
+                <p className="mt-4 text-[0.95rem] leading-relaxed">{project.summary}</p>
+                <ul className="mt-4 space-y-1.5 text-sm leading-relaxed text-muted">
                   {project.highlights.map((point) => (
                     <li key={point} className="flex gap-2.5">
                       <span aria-hidden="true" className="mt-[0.7em] h-px w-3 shrink-0 bg-accent" />
@@ -137,12 +138,19 @@ export function ProjectDetails({ project, projects, onClose }: ProjectDetailsPro
                     </li>
                   ))}
                 </ul>
-                <p className="mt-6 text-sm text-muted">
-                  <span className="font-semibold text-ink">Built with </span>
-                  {project.tech.join(" · ")}
-                </p>
+                <div className="mt-4 text-sm">
+                  <p className="font-semibold text-ink">Built with</p>
+                  <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-muted">
+                    {project.tech.map((tool) => (
+                      <li key={tool} className="inline-flex items-center gap-1.5">
+                        <TechIcon name={tool} />
+                        {tool}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
                 <p className="sr-only">{project.imageAlt}</p>
-                <div className="mt-8 flex flex-wrap gap-3">
+                <div className="mt-6 flex flex-wrap gap-3">
                   {project.demo && (
                     <a href={project.demo} target="_blank" rel="noreferrer" className="pv-pill pv-pill-accent">
                       Visit live site

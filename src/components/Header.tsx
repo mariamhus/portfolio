@@ -3,15 +3,15 @@ import { ThemeToggle } from "./ThemeToggle";
 import { useActiveSection } from "../hooks/useActiveSection";
 import { profile } from "../data/profile";
 
-export type Page = "home" | "about" | "projects" | "contact";
+export type Page = "home" | "projects";
 
 // Items with an href are separate pages; the rest are sections of the home page.
 const NAV: { id: string; label: string; href?: string; page?: Page }[] = [
-  { id: "about", label: "About", href: "/about/", page: "about" },
-  { id: "work", label: "Work", href: "/about/#work" },
-  { id: "projects", label: "Projects", href: "/projects/", page: "projects" },
+  { id: "about", label: "About" },
+  { id: "work", label: "Work" },
+  { id: "projects", label: "Projects" },
   { id: "skills", label: "Skills" },
-  { id: "contact", label: "Contact", href: "/contact/", page: "contact" },
+  { id: "contact", label: "Contact" },
 ];
 
 const SECTION_IDS = NAV.filter((item) => !item.href).map((item) => item.id);

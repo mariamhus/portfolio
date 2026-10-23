@@ -2,6 +2,26 @@
 
 All notable changes to the portfolio site.
 
+## 2026-10-25
+
+### Added
+
+- Seasonal cursor: a flower in spring, a crescent moon in summer, a leaf in autumn, and a snowflake in winter, in the season's accent color for day or night, with a white halo. Over anything clickable (links, buttons, tabs, cards) the shape shrinks into a glowing ring of the season color with a small sparkle; over text and fields it stays the plain season shape.
+- Skill logos burst out from behind the name and fly away in two waves on the loading screen.
+
+### Changed
+
+- The loading screen shows on every visit and refresh (about 2.6 seconds) instead of once per visit. It is still skipped for reduced motion.
+
+- Everything is on one page again: About, Professional work, and the contact form moved back to the home page, and every menu link scrolls to its section. The separate About and Contact pages are gone; the Projects grid page stays.
+- About is reformatted for the home page: the same layout as the other sections, with a short intro and the three cards, and no second "Hello, I'm Mariam" under the hero. The facts live in the hero's flip card.
+- Projects is a spotlight: one project at a time in a large, level browser window, with faded neighbours at the edges. Arrows, tabs (with a dark pill that slides to the active one), arrow keys, and swipes move a project in from the side, and the title, description, and tags reveal in turn. It covers all eight projects. Scrolling the page never changes the project, but while nobody is using it, it moves on by itself every 5 seconds, with a thin line that fills until the next one. It pauses on hover and focus, while off screen or in a background tab, and with the pause button next to the arrows; it doesn't auto-play for reduced motion.
+- The contact form sits beside the email address and links in the Contact section.
+
+### Removed
+
+- The animated character on the contact page.
+
 ## 2026-10-24
 
 ### Added

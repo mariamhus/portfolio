@@ -1,29 +1,9 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ArrowDown, ArrowLeft, Shuffle } from "lucide-react";
+import { ArrowDown } from "lucide-react";
+import { Section } from "./Section";
 import { useInView } from "../hooks/useInView";
-import { aboutCards, aboutFacts, profile, type AboutCard } from "../data/profile";
+import { aboutCards, profile, type AboutCard } from "../data/profile";
 
-const GREETING = "Hello, I'm";
-const NAME = "Mariam.";
-
-// Letters are grouped by word, so a line can only break between words, never inside "Mariam".
-function Letters({ text, offset = 0 }: { text: string; offset?: number }) {
-  let count = offset;
-  return text.split(" ").map((word, wordIndex) => (
-    <span key={wordIndex}>
-      {wordIndex > 0 && " "}
-      <span className="about-word">
-        {[...word].map((char, index) => (
-          <span key={index} className="about-letter" style={{ "--l": count++ } as CSSProperties}>
-            {char}
-          </span>
-        ))}
-      </span>
-    </span>
-  ));
-}
-
-// Small animated pictures that play while a card is open.
 function Visual({ kind }: { kind: AboutCard["visual"] }) {
   if (kind === "architecture") {
     // A component tree that draws its connections.
@@ -94,29 +74,6 @@ function Card({ card, index }: { card: AboutCard; index: number }) {
   );
 }
 
-function Facts() {
-  const [index, setIndex] = useState(0);
-  return (
-    <div className="about-facts">
-      <div>
-        <h3 className="font-display text-2xl font-bold tracking-tight">A little more about me</h3>
-        <p className="mt-1 text-muted">
-          Fact {index + 1} of {aboutFacts.length}
-        </p>
-      </div>
-      <div className="about-deck">
-        <p key={index} className="about-fact" aria-live="polite">
-          {aboutFacts[index]}
-        </p>
-      </div>
-      <button type="button" onClick={() => setIndex((value) => (value + 1) % aboutFacts.length)} className="button-secondary">
-        <Shuffle aria-hidden="true" className="size-4" />
-        Tell me something else
-      </button>
-    </div>
-  );
-}
-
 // A line that grows as you scroll and leads into the Professional work timeline below.
 function Bridge() {
   const ref = useRef<HTMLAnchorElement>(null);
@@ -157,36 +114,22 @@ function Bridge() {
   );
 }
 
+// Sits under the hero, so it skips a second big introduction: a short intro, three cards about how
+// I work, and a line that leads into Professional work below.
 export function About() {
-  const [ref, inView] = useInView<HTMLElement>(0.2);
+  const [ref, inView] = useInView<HTMLDivElement>(0.2);
 
   return (
-    <section ref={ref} id="about" aria-labelledby="about-title" data-inview={inView || undefined} className="about pt-12 sm:pt-16">
-      <a href="/" className="text-link mb-10 text-sm">
-        <ArrowLeft aria-hidden="true" className="size-4" />
-        Back to home
-      </a>
-      <h1 id="about-title" className="font-display text-[clamp(2.75rem,7vw,5.5rem)] leading-[0.95] font-extrabold tracking-tight">
-        <span className="sr-only">
-          {GREETING} {NAME}
-        </span>
-        <span aria-hidden="true">
-          <Letters text={GREETING} />{" "}
-          <span className="text-accent">
-            <Letters text={NAME} offset={GREETING.length + 1} />
-          </span>
-        </span>
-      </h1>
-      <p className="about-intro mt-6 max-w-2xl text-lg leading-relaxed sm:text-xl">{profile.about[0]}</p>
-
-      <ul className="mt-14 grid items-start gap-5 md:grid-cols-3">
-        {aboutCards.map((card, index) => (
-          <Card key={card.title} card={card} index={index} />
-        ))}
-      </ul>
-
-      <Facts />
-      <Bridge />
-    </section>
+    <Section id="about" title="About" intro="How I like to work.">
+      <div ref={ref} data-inview={inView || undefined} className="about">
+        <p className="about-intro max-w-2xl text-lg leading-relaxed sm:text-xl">{profile.about[0]}</p>
+        <ul className="mt-10 grid items-start gap-5 md:grid-cols-3">
+          {aboutCards.map((card, index) => (
+            <Card key={card.title} card={card} index={index} />
+          ))}
+        </ul>
+        <Bridge />
+      </div>
+    </Section>
   );
 }

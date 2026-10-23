@@ -1,18 +1,17 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Lock } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Lock, Pause, Play } from "lucide-react";
 import type { Project } from "../data/profile";
 
 interface ProjectShowcaseProps {
   projects: Project[];
   onOpen: (project: Project) => void;
-  /** Rendered above the spotlight, inside the pinned area, so the heading stays with the projects. */
+  /** Rendered above the spotlight, beside the arrows and counter. */
   heading: ReactNode;
 }
 
-// How much page scroll moves the spotlight on by one project while the section is pinned, as a share of the screen height.
-const STEP = 0.32;
-const PIN_QUERY = "(min-width: 1024px) and (min-height: 800px) and (prefers-reduced-motion: no-preference)";
 const SWIPE_PX = 40;
+// Moves on to the next project after this long without anyone using the spotlight.
+const AUTOPLAY_MS = 5000;
 
 function host(url: string) {
   try {
@@ -27,73 +26,55 @@ function offsetOf(index: number, active: number, count: number) {
   return ((index - active + count + Math.floor(count / 2)) % count) - Math.floor(count / 2);
 }
 
-// One project at a time in a large browser window. Arrows, tabs, swipes, or (on large screens)
-// scrolling through the pinned section glide the next project in from the side.
+// One project at a time in a large browser window. Arrows, tabs, arrow keys, or a swipe glide the
+// next project in from the side; scrolling the page never changes the project. While nobody is using it,
+// it moves on by itself every few seconds.
 export function ProjectShowcase({ projects, onOpen, heading }: ProjectShowcaseProps) {
   const count = projects.length;
   const [active, setActive] = useState(0);
-  const [pinned, setPinned] = useState(false);
-  const pinRef = useRef<HTMLDivElement>(null);
-  const stickyRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const indicatorRef = useRef<HTMLSpanElement>(null);
   const swipe = useRef<{ x: number; y: number } | null>(null);
   // A swipe ends with a click on the slide; this stops that click from opening the details.
   const swiped = useRef(false);
   const current = projects[active];
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [hovering, setHovering] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [stopped, setStopped] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const playing = !stopped && !hovering && !focused && visible && !reduceMotion;
 
   useEffect(() => {
-    const query = window.matchMedia(PIN_QUERY);
-    const sync = () => setPinned(query.matches);
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduceMotion(query.matches);
     sync();
     query.addEventListener("change", sync);
-    return () => query.removeEventListener("change", sync);
-  }, []);
-
-  // Pinned: the scroll position inside the section decides which project is in the spotlight.
-  const geometry = useCallback(() => {
-    const pin = pinRef.current!;
-    const sticky = stickyRef.current!;
-    const top = parseFloat(getComputedStyle(sticky).top) || 0;
-    const start = pin.getBoundingClientRect().top + window.scrollY - top;
-    const travel = pin.offsetHeight - sticky.offsetHeight;
-    return { start, travel };
-  }, []);
-
-  useEffect(() => {
-    if (!pinned) return;
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const { start, travel } = geometry();
-      const progress = Math.min(1, Math.max(0, (window.scrollY - start) / travel));
-      setActive(Math.round(progress * (count - 1)));
-    };
-    const schedule = () => {
-      if (!frame) frame = window.requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.35 });
+    if (rootRef.current) observer.observe(rootRef.current);
     return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
+      query.removeEventListener("change", sync);
+      observer.disconnect();
     };
-  }, [pinned, count, geometry]);
+  }, []);
+
+  // Each change of project (by hand or by itself) starts a fresh wait, so using it resets the timer.
+  useEffect(() => {
+    if (!playing) return;
+    const id = window.setTimeout(() => {
+      if (!document.hidden) setActive((value) => (value + 1) % count);
+    }, AUTOPLAY_MS);
+    return () => window.clearTimeout(id);
+  }, [playing, active, count]);
 
   const select = useCallback(
     (index: number, focusTab = false) => {
       const next = (index + count) % count;
       setActive(next);
-      if (pinned) {
-        // Keep the page position and the spotlight in agreement: jump to this project's spot in the pinned range.
-        const { start, travel } = geometry();
-        window.scrollTo({ top: start + (next / (count - 1)) * travel, behavior: "instant" });
-      }
       if (focusTab) tabsRef.current[next]?.focus();
     },
-    [count, pinned, geometry],
+    [count],
   );
 
   // Slide the dark pill under the active tab, and keep that tab in view when the row scrolls.
@@ -132,8 +113,17 @@ export function ProjectShowcase({ projects, onOpen, heading }: ProjectShowcasePr
   }
 
   return (
-    <div ref={pinRef} className="spot-pin" style={pinned ? ({ "--steps": count - 1, "--step": STEP } as CSSProperties) : undefined} data-pinned={pinned || undefined}>
-      <div ref={stickyRef} className="spot-sticky">
+    <div
+      ref={rootRef}
+      className="spot-pin"
+      onPointerEnter={(event) => event.pointerType === "mouse" && setHovering(true)}
+      onPointerLeave={() => setHovering(false)}
+      onFocus={() => setFocused(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node)) setFocused(false);
+      }}
+    >
+      <div className="spot-sticky">
         <div className="spot-head">
           {heading}
           <div className="spot-nav">
@@ -146,6 +136,17 @@ export function ProjectShowcase({ projects, onOpen, heading }: ProjectShowcasePr
             <button type="button" onClick={() => select(active + 1)} className="spot-arrow" aria-label="Next project">
               <ArrowRight aria-hidden="true" className="size-4" />
             </button>
+            {!reduceMotion && (
+              <button
+                type="button"
+                onClick={() => setStopped((value) => !value)}
+                className="spot-arrow"
+                aria-label={stopped ? "Play projects automatically" : "Pause automatic projects"}
+                aria-pressed={stopped}
+              >
+                {stopped ? <Play aria-hidden="true" className="size-4" /> : <Pause aria-hidden="true" className="size-4" />}
+              </button>
+            )}
           </div>
         </div>
 
@@ -181,6 +182,11 @@ export function ProjectShowcase({ projects, onOpen, heading }: ProjectShowcasePr
             );
           })}
         </div>
+
+        {/* Restarts with the timer: each new project, and each time it resumes after a pause. */}
+        <span className="spot-timer" aria-hidden="true">
+          <span key={`${active}-${playing}`} data-paused={!playing || undefined} style={{ "--interval": `${AUTOPLAY_MS}ms` } as CSSProperties} />
+        </span>
 
         <div id="spot-panel" role="tabpanel" aria-labelledby={`spot-tab-${active}`} className="spot-info" key={current.name}>
           <div className="min-w-0">

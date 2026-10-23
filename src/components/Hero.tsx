@@ -61,11 +61,11 @@ export function Hero() {
                 Email
               </a>
             </li>
-            <li>
-              <a href="/about/" className="text-link">
+            {/* <li>
+              <a href="#about" className="text-link">
                 More about me
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
 
