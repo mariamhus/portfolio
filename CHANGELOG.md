@@ -4,9 +4,18 @@ All notable changes to the portfolio site.
 
 ## 2026-10-23
 
+### Added
+
+- Animated background on both pages: a night starfield with parallax and shooting stars, plus seasonal effects (spring petals, summer fireflies, autumn leaves, winter snow and aurora).
+- Season picker in the header (automatic from today's date, or a chosen season), saved between visits. `?season=` and `?theme=` in the address preview any combination.
+- Sunrise and sunset animation when switching between day and night. Without a saved choice, spring and summer open in day mode and autumn and winter at night.
+- Letter-by-letter animation on the name, and text that settles into place word by word as you scroll.
+- All animations stop when the visitor's system asks for reduced motion.
+
 ### Changed
 
 - Skills now include Zustand, React Hook Form, and i18next, matching the CV.
+- README updated for the custom domain, the new features, and the current project structure, with a new screenshot.
 
 ## 2026-10-22
 
