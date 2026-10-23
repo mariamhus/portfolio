@@ -1,3 +1,4 @@
+import { FallingWords } from "./FallingWords";
 import { Section } from "./Section";
 import { experience } from "../data/profile";
 
@@ -21,7 +22,7 @@ export function Experience() {
                 {role.points.map((point) => (
                   <li key={point} className="flex gap-3">
                     <span aria-hidden="true" className="mt-[0.7em] size-1.5 shrink-0 rounded-full bg-accent" />
-                    {point}
+                    <FallingWords text={point} />
                   </li>
                 ))}
               </ul>

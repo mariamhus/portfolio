@@ -1,6 +1,15 @@
+import type { CSSProperties } from "react";
 import { ArrowRight, Download, MapPin } from "lucide-react";
 import { ExternalLink } from "./ExternalLink";
 import { profile } from "../data/profile";
+
+function Letters({ text, offset = 0 }: { text: string; offset?: number }) {
+  return [...text].map((char, index) => (
+    <span key={index} className="hero-letter">
+      <span style={{ "--l": offset + index } as CSSProperties}>{char === " " ? " " : char}</span>
+    </span>
+  ));
+}
 
 export function Hero() {
   const [first, ...rest] = profile.name.split(" ");
@@ -13,11 +22,16 @@ export function Hero() {
       </p>
       <div className="hero-name-wrap mt-4">
         <h1 id="hero-name" className="hero-name font-display font-extrabold">
-          <span className="hero-line">
-            <span>{first}</span>
+          <span className="sr-only">{profile.name}</span>
+          <span aria-hidden="true" className="hero-line">
+            <span>
+              <Letters text={first} />
+            </span>
           </span>
-          <span className="hero-line">
-            <span className="text-accent">{rest.join(" ")}</span>
+          <span aria-hidden="true" className="hero-line">
+            <span className="text-accent">
+              <Letters text={rest.join(" ")} offset={first.length} />
+            </span>
           </span>
         </h1>
       </div>

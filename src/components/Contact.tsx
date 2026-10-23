@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Check, Copy, Download } from "lucide-react";
 import { ExternalLink } from "./ExternalLink";
+import { FallingWords } from "./FallingWords";
 import { profile } from "../data/profile";
 
 export function Contact() {
@@ -26,9 +27,7 @@ export function Contact() {
       <h2 id="contact-title" className="font-display text-[clamp(2.75rem,8vw,6rem)] leading-[0.95] font-extrabold tracking-tight">
         Get in touch
       </h2>
-      <p className="mt-5 max-w-xl text-lg text-muted">
-        Email is the quickest way to reach me. I'm also on LinkedIn and GitHub.
-      </p>
+      <FallingWords text="Email is the quickest way to reach me. I'm also on LinkedIn and GitHub." className="mt-5 max-w-xl text-lg text-muted" />
       <div className="mt-8 flex flex-wrap items-center gap-3">
         <a href={`mailto:${profile.email}`} className="email-link font-display font-bold">
           {profile.email}

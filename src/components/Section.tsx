@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { FallingWords } from "./FallingWords";
 
 interface SectionProps {
   id: string;
@@ -18,7 +19,7 @@ export function Section({ id, title, intro, stacked = false, children }: Section
           <h2 id={`${id}-title`} className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
             {title}
           </h2>
-          {intro && <p className="mt-3 max-w-sm text-muted">{intro}</p>}
+          {intro && <FallingWords text={intro} className="mt-3 max-w-sm text-muted" />}
         </div>
         <div className="min-w-0">{children}</div>
       </div>

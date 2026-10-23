@@ -13,14 +13,31 @@
     <meta property="og:image" content="%SITE_URL%/og.png" />
     <link rel="canonical" href="%SITE_URL%/projects/" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#f2f3f5" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#05060f" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <script>
-      try {
-        var theme = localStorage.getItem("portfolio:theme");
-        if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
-      } catch (error) {}
+      (function () {
+        var stored = null;
+        var storedSeason = null;
+        try {
+          stored = localStorage.getItem("portfolio:theme");
+          storedSeason = localStorage.getItem("portfolio:season");
+        } catch (error) {}
+        // Northern-hemisphere seasons. ?season=spring|summer|autumn|winter previews one, then the
+        // season picked in the header, then today's season.
+        var month = new Date().getMonth();
+        var seasons = ["winter", "winter", "spring", "spring", "spring", "summer", "summer", "summer", "autumn", "autumn", "autumn", "winter"];
+        var preview = new URLSearchParams(location.search).get("season");
+        document.documentElement.dataset.season =
+          seasons.indexOf(preview) >= 0 ? preview : seasons.indexOf(storedSeason) >= 0 ? storedSeason : seasons[month];
+        // No saved choice: spring and summer (March to August) open in day mode, autumn and winter in night mode.
+        var themePreview = new URLSearchParams(location.search).get("theme");
+        var theme = themePreview === "light" || themePreview === "dark" ? themePreview : stored === "light" || stored === "dark" ? stored : month >= 2 && month <= 7 ? "light" : "dark";
+        if (theme === "light") {
+          document.documentElement.dataset.theme = "light";
+          document.querySelector('meta[name="theme-color"]').setAttribute("content", "#eef6ff");
+        }
+      })();
     </script>
   </head>
   <body>

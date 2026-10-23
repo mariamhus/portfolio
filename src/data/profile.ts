@@ -264,11 +264,11 @@ export const experience: Role[] = [
 export const skills: { group: string; items: string[] }[] = [
   {
     group: "Frontend",
-    items: ["React", "Next.js", "Angular", "TypeScript", "JavaScript (ES6+)", "Redux Toolkit", "RTK Query", "TanStack Query", "React Router", "HTML5", "CSS3", "Sass", "Tailwind CSS", "Material UI", "Ant Design"],
+    items: ["React", "Next.js", "Angular", "TypeScript", "JavaScript (ES6+)", "Redux Toolkit", "RTK Query", "TanStack Query", "Zustand", "React Router", "React Hook Form", "HTML5", "CSS3", "Sass", "Tailwind CSS", "Material UI", "Ant Design"],
   },
   {
     group: "Architecture and quality",
-    items: ["Component architecture", "Design systems", "Performance optimization", "Lazy loading", "Accessibility", "Internationalization (RTL)", "Unit testing (Vitest, React Testing Library)", "Cross-browser testing"],
+    items: ["Component architecture", "Design systems", "Performance optimization", "Lazy loading", "Accessibility", "Internationalization (i18next, RTL)", "Unit testing (Vitest, React Testing Library)", "Cross-browser testing"],
   },
   {
     group: "Data visualization",
