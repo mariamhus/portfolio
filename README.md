@@ -2,7 +2,7 @@
 
 My personal portfolio site: who I am, the projects I've built, my experience, and how to reach me. Built with React, TypeScript, Vite, and Tailwind CSS.
 
-**Live site:** [ _Mariam Hussein Portfolio_](https://mariamhussein.vercel.app/)
+**Live site:** [ _Mariam Hussein Portfolio_](https://www.mariam-hussein.website/)
 
 ![Screenshot](./screenshot.png)
 
